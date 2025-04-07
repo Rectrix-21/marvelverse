@@ -196,7 +196,10 @@ export default function MCUGuesser() {
         // For the "Guess" property, use the text from the input.
         guessedVal = currentGuess || "N/A";
         actualVal = selectedCharacter ? selectedCharacter.name : "N/A";
-      } else if (prop.parentKey === "custom" && prop.label.toLowerCase() === "class") {
+      } else if (
+        prop.parentKey === "custom" &&
+        prop.label.toLowerCase() === "class"
+      ) {
         guessedVal = guess ? getChampionClass(guess.name) : "N/A";
         actualVal = selectedCharacter.custom?.class || "N/A";
       } else {
@@ -697,7 +700,13 @@ export default function MCUGuesser() {
         {comparisons.length > 0 ? (
           renderComparisonTable()
         ) : (
-          <p style={{ textAlign: "center", fontSize: "1.2rem", paddingLeft: "30px" }}>
+          <p
+            style={{
+              textAlign: "center",
+              fontSize: "1.2rem",
+              paddingLeft: "30px",
+            }}
+          >
             After your guess, comparisons will appear here.
           </p>
         )}
