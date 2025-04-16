@@ -1,0 +1,21 @@
+.header {
+  font-size: 8rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  padding: 30px;
+  padding-bottom: 200px;
+  font-family: "Marvel", sans-serif;
+  border-radius: 4px;
+  text-transform: uppercase;
+  margin-top: -200px;
+  margin-bottom: -100px;
+  background: linear-gradient(
+    270deg,
+    rgb(175, 0, 0),
+    rgb(100, 145, 255),
+    rgba(175, 0, 0)
+  );
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+}

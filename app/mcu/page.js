@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-// Import your champion class mapping from your JSON file
+import Link from "next/link";
 import championData from "./class.json";
+import Image from "next/image";
 
 const ACCESS_TOKEN = "b7c79102f60865edb0f830afef67f183";
 
@@ -17,7 +18,6 @@ const mcuMovieClues = {
   Hawkeye: "This master archer appears throughout the Avengers films.",
 };
 
-// Helper: find champion class from the JSON data.
 const getChampionClass = (name) => {
   const entry = championData.characters.find(
     (item) => item.name.toLowerCase() === name.toLowerCase()
@@ -44,7 +44,13 @@ export default function MCUGuesser() {
   const [comparisons, setComparisons] = useState([]);
   const [finalAnswer, setFinalAnswer] = useState("");
 
-  // Comparison table properties including a new "Guess" property and "Place of Birth"
+  // State for rules popup
+  const [showRules, setShowRules] = useState(false);
+  const toggleRulesPopup = () => {
+    setShowRules((prev) => !prev);
+  };
+
+  // Comparison table properties
   const comparisonProperties = [
     { label: "Guess", custom: true, type: "text" },
     { label: "Full Name", parentKey: "biography", type: "text" },
@@ -63,7 +69,6 @@ export default function MCUGuesser() {
 
   const fetchURL = `https://www.superheroapi.com/api.php/${ACCESS_TOKEN}/search/a`;
 
-  // Fetch character data on mount.
   useEffect(() => {
     async function fetchData() {
       try {
@@ -103,7 +108,6 @@ export default function MCUGuesser() {
     fetchData();
   }, [fetchURL]);
 
-  // Fetch suggestions based on current guess.
   useEffect(() => {
     async function fetchSuggestions() {
       if (!currentGuess.trim()) {
@@ -136,7 +140,6 @@ export default function MCUGuesser() {
     fetchSuggestions();
   }, [currentGuess]);
 
-  // When selectedCharacter changes, attach its champion class and set clues.
   useEffect(() => {
     if (selectedCharacter) {
       if (!selectedCharacter.custom) {
@@ -145,7 +148,6 @@ export default function MCUGuesser() {
       selectedCharacter.custom.class = getChampionClass(selectedCharacter.name);
       const bio = selectedCharacter.biography || {};
 
-      // Determine pronouns based on gender.
       const gender =
         selectedCharacter.appearance && selectedCharacter.appearance.gender
           ? selectedCharacter.appearance.gender.toLowerCase()
@@ -187,13 +189,11 @@ export default function MCUGuesser() {
     }
   }, [selectedCharacter]);
 
-  // Helper: record the comparison of the current guess.
   const recordComparison = (guess) => {
     const rowData = comparisonProperties.map((prop) => {
       let guessedVal;
       let actualVal;
       if (prop.custom) {
-        // For the "Guess" property, use the text from the input.
         guessedVal = currentGuess || "N/A";
         actualVal = selectedCharacter ? selectedCharacter.name : "N/A";
       } else if (
@@ -230,13 +230,20 @@ export default function MCUGuesser() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (currentGuess.trim() === "") {
+      setFeedback("Please provide a guess!");
+      return;
+    }
     if (!selectedCharacter || gameOver || roundEnded) return;
+
     const guess = suggestions.find(
       (char) =>
         char.name.trim().toLowerCase() === currentGuess.trim().toLowerCase()
     );
+
     setGuessedCharacter(guess);
     recordComparison(guess);
+
     if (
       currentGuess.trim().toLowerCase() ===
       selectedCharacter.name.trim().toLowerCase()
@@ -252,7 +259,6 @@ export default function MCUGuesser() {
       const newAttempts = attemptsLeft - 1;
       setAttemptsLeft(newAttempts);
       if (newAttempts <= 0) {
-        // Save the final answer so it can be displayed in the round over UI.
         setFinalAnswer(selectedCharacter.name);
         setFeedback(
           `Round Over! The correct answer was ${selectedCharacter.name}.`
@@ -287,7 +293,7 @@ export default function MCUGuesser() {
     setClueIndex(0);
     setGuessedCharacter(null);
     setComparisons([]);
-    setFinalAnswer(""); // clear the final answer for the new round
+    setFinalAnswer("");
   };
 
   const handleRestart = () => {
@@ -315,17 +321,16 @@ export default function MCUGuesser() {
           width: "100%",
           borderCollapse: "collapse",
           marginTop: "20px",
-          backgroundColor: "#2a2a2a",
           color: "#fff",
         }}
       >
         <thead>
-          <tr style={{ backgroundColor: "#444" }}>
+          <tr style={{ backgroundColor: "rgba(0, 0, 0, 0.75)" }}>
             {comparisonProperties.map((prop) => (
               <th
                 key={prop.label}
                 style={{
-                  border: "1px solid #666",
+                  border: "1px solid rgba(0, 200, 214, 0.75)",
                   padding: "10px 15px",
                   textAlign: "center",
                   fontSize: "1rem",
@@ -341,12 +346,15 @@ export default function MCUGuesser() {
             <tr
               key={rowIndex}
               style={{
-                backgroundColor: rowIndex % 2 === 0 ? "#333" : "#2a2a2a",
+                backgroundColor:
+                  rowIndex % 2 === 0
+                    ? "rgba(10, 0, 0, 0.75)"
+                    : "rgba(10, 0, 0, 0.8)",
               }}
             >
               {rowData.map((cell) => {
                 let cellStyle = {
-                  border: "1px solid #666",
+                  border: "1px solid rgba(0, 200, 214, 0.75)",
                   padding: "10px 15px",
                   textAlign: "center",
                   fontSize: "0.95rem",
@@ -392,7 +400,6 @@ export default function MCUGuesser() {
           textAlign: "center",
           padding: "60px",
           fontSize: "22px",
-          background: "#1b1b1b",
           color: "#fff",
         }}
       >
@@ -440,21 +447,46 @@ export default function MCUGuesser() {
         maxWidth: "1200px",
         margin: "40px auto",
         padding: "40px",
-        background: "linear-gradient(135deg, #1b1b1b, #3b3b3b)",
+        background: "linear-gradient(0deg, rgb(0, 0, 0), rgb(37, 0, 0))",
         color: "#fff",
         borderRadius: "10px",
-        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+        boxShadow: "0px -2px -8px rgb(255, 0, 0)",
         lineHeight: "1.6",
       }}
     >
+      {/* Home Button on top left */}
+      <div style={{ width: "100%", textAlign: "left", marginBottom: "20px" }}>
+        <Link href="/" style={{ textDecoration: "none" }}>
+          <button
+            style={{
+              padding: "10px 20px",
+              backgroundColor: "rgb(155, 0, 0)",
+              color: "#fff",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+              transition: "background-color 0.3s",
+            }}
+            onMouseOver={(e) =>
+              (e.currentTarget.style.backgroundColor = "rgb(100, 0, 0)")
+            }
+            onMouseOut={(e) =>
+              (e.currentTarget.style.backgroundColor = "rgb(155, 0, 0)")
+            }
+          >
+            Home
+          </button>
+        </Link>
+      </div>
+
       {/* Main game panel */}
       <div
         style={{
           flex: "2 1 600px",
           padding: "20px",
-          backgroundColor: "#262626",
+          background: "linear-gradient(180deg, rgb(10, 0, 0), rgb(37, 0, 0))",
           borderRadius: "8px",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.7)",
+          boxShadow: "0 2px 8px rgb(255, 0, 0)",
         }}
       >
         <h1
@@ -462,10 +494,32 @@ export default function MCUGuesser() {
             textAlign: "center",
             fontSize: "2.8rem",
             marginBottom: "1rem",
-            color: "#ffcc00",
+            color: "rgb(0, 144, 163)",
           }}
         >
-          Marvel Guesser
+          Marvel Guesser{" "}
+          <span
+            onClick={toggleRulesPopup}
+            title="How to play"
+            style={{
+              marginLeft: "10px",
+              boxSizing: "border-box",
+              cursor: "pointer",
+              fontSize: "1rem",
+              display: "inline-flex", // keeps it inline with text
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#000", // Black text
+              backgroundColor: "#fff", // White background
+              borderRadius: "50%",
+              width: "2em",
+              height: "2em",
+              userSelect: "none",
+              verticalAlign: "middle",
+            }}
+          >
+            ?
+          </span>
         </h1>
         <p
           style={{
@@ -479,17 +533,27 @@ export default function MCUGuesser() {
         </p>
         <div style={{ textAlign: "center", marginBottom: "30px" }}>
           {selectedCharacter.image && selectedCharacter.image.url ? (
-            <img
-              src={selectedCharacter.image.url}
-              alt="Guess the Marvel character"
+            <div
               style={{
                 width: "100%",
                 maxWidth: "500px",
                 borderRadius: "8px",
                 filter: "brightness(0.8)",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.8)",
+                boxShadow: "0 4px 12px rgba(206, 0, 0, 0.8)",
+                margin: "0 auto",
+                position: "relative",
               }}
-            />
+            >
+              <Image
+                src={selectedCharacter.image.url}
+                alt="Guess the Marvel character"
+                layout="responsive"
+                width={500}
+                height={500}
+                objectFit="cover"
+                quality={75}
+              />
+            </div>
           ) : (
             <p style={{ fontSize: "1.2rem" }}>
               No image available for this character.
@@ -515,10 +579,11 @@ export default function MCUGuesser() {
                       padding: "14px",
                       fontSize: "1.1rem",
                       borderRadius: "6px",
-                      border: "1px solid #555",
+                      border: "1px solid rgb(0, 144, 163)",
                       marginBottom: "10px",
                       outline: "none",
-                      backgroundColor: "#333",
+                      background:
+                        "linear-gradient(90deg, rgb(10, 0, 0), rgb(0, 0, 0))",
                       color: "#fff",
                     }}
                   />
@@ -527,21 +592,21 @@ export default function MCUGuesser() {
                     type="submit"
                     style={{
                       padding: "14px 30px",
-                      backgroundColor: "#e62429",
+                      backgroundColor: "rgb(155, 0, 0)",
                       color: "#fff",
                       border: "none",
                       borderRadius: "6px",
-                      fontSize: "1.1rem",
+                      fontSize: "1rem",
                       cursor: "pointer",
                       marginTop: "20px",
                       marginBottom: "20px",
                       transition: "background-color 0.3s",
                     }}
                     onMouseOver={(e) =>
-                      (e.currentTarget.style.backgroundColor = "#c31f23")
+                      (e.currentTarget.style.backgroundColor = "rgb(100, 0, 0)")
                     }
                     onMouseOut={(e) =>
-                      (e.currentTarget.style.backgroundColor = "#e62429")
+                      (e.currentTarget.style.backgroundColor = "rgb(155, 0, 0)")
                     }
                   >
                     Submit Guess
@@ -555,7 +620,7 @@ export default function MCUGuesser() {
                       marginTop: "10px",
                       marginBottom: "1.5rem",
                       textAlign: "left",
-                      backgroundColor: "#333",
+                      backgroundColor: "rgba(0, 0, 0, 0.5)",
                       borderRadius: "6px",
                       maxWidth: "400px",
                       margin: "0 auto",
@@ -569,17 +634,20 @@ export default function MCUGuesser() {
                         style={{
                           padding: "10px 14px",
                           cursor: "pointer",
-                          backgroundColor: "#444",
+                          backgroundColor: "rgba(43, 0, 0, 0.75)",
                           borderRadius: "6px",
-                          marginBottom: "8px",
+                          marginTop: "5px",
+                          marginBottom: "5px",
                           fontSize: "1rem",
-                          transition: "background-color 0.2s",
+                          transition: "background-color 0.3s",
                         }}
                         onMouseOver={(e) =>
-                          (e.currentTarget.style.backgroundColor = "#555")
+                          (e.currentTarget.style.backgroundColor =
+                            "rgba(107, 0, 0, 0.8)")
                         }
                         onMouseOut={(e) =>
-                          (e.currentTarget.style.backgroundColor = "#444")
+                          (e.currentTarget.style.backgroundColor =
+                            "rgba(0, 0, 0, 0.8)")
                         }
                       >
                         {char.name}
@@ -593,7 +661,7 @@ export default function MCUGuesser() {
                       marginTop: "20px",
                       textAlign: "center",
                       fontSize: "1.2rem",
-                      color: "#ffcc00",
+                      color: "rgb(0, 144, 163)",
                     }}
                   >
                     {feedback}
@@ -620,19 +688,19 @@ export default function MCUGuesser() {
                   onClick={handleNextRound}
                   style={{
                     padding: "14px 30px",
-                    backgroundColor: "#e62429",
+                    backgroundColor: "rgb(155, 0, 0)",
                     color: "#fff",
                     border: "none",
                     borderRadius: "6px",
-                    fontSize: "1.1rem",
+                    fontSize: "1rem",
                     cursor: "pointer",
                     transition: "background-color 0.3s",
                   }}
                   onMouseOver={(e) =>
-                    (e.currentTarget.style.backgroundColor = "#c31f23")
+                    (e.currentTarget.style.backgroundColor = "rgb(100, 0, 0)")
                   }
                   onMouseOut={(e) =>
-                    (e.currentTarget.style.backgroundColor = "#e62429")
+                    (e.currentTarget.style.backgroundColor = "rgb(155, 0, 0)")
                   }
                 >
                   Next Round
@@ -662,20 +730,20 @@ export default function MCUGuesser() {
               onClick={handleRestart}
               style={{
                 padding: "14px 30px",
-                backgroundColor: "#e62429",
+                backgroundColor: "rgb(155, 0, 0)",
                 color: "#fff",
                 border: "none",
                 borderRadius: "6px",
-                fontSize: "1.1rem",
+                fontSize: "1rem",
                 cursor: "pointer",
                 marginTop: "10px",
                 transition: "background-color 0.3s",
               }}
               onMouseOver={(e) =>
-                (e.currentTarget.style.backgroundColor = "#c31f23")
+                (e.currentTarget.style.backgroundColor = "rgb(100, 0, 0)")
               }
               onMouseOut={(e) =>
-                (e.currentTarget.style.backgroundColor = "#e62429")
+                (e.currentTarget.style.backgroundColor = "rgb(155, 0, 0)")
               }
             >
               Play Again
@@ -684,33 +752,60 @@ export default function MCUGuesser() {
         )}
       </div>
       {/* Comparison Table Panel */}
-      <div
-        style={{
-          flex: "1 1 300px",
-        }}
-      >
-        <h2
+      <div>{comparisons.length > 0 ? renderComparisonTable() : null}</div>
+
+      {/* Rules Popup */}
+      {showRules && (
+        <div
           style={{
-            textAlign: "center",
-            marginBottom: "1rem",
-            fontSize: "1.6rem",
-            color: "#ffcc00",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
           }}
-        ></h2>
-        {comparisons.length > 0 ? (
-          renderComparisonTable()
-        ) : (
-          <p
+        >
+          <div
             style={{
-              textAlign: "center",
-              fontSize: "1.2rem",
-              paddingLeft: "30px",
+              background: "rgba(0, 0, 0, 0.9)",
+              color: "rgba(255, 255, 255, 0.9)",
+              padding: "20px",
+              borderRadius: "8px",
+              maxWidth: "90%",
+              maxHeight: "80%",
+              overflowY: "auto",
+              position: "relative",
             }}
           >
-            After your guess, comparisons will appear here.
-          </p>
-        )}
-      </div>
+            <button
+              onClick={toggleRulesPopup}
+              style={{
+                position: "absolute",
+                color: "rgba(255, 255, 255, 0.9)",
+                top: "10px",
+                right: "10px",
+                border: "none",
+                background: "transparent",
+                fontSize: "1.5rem",
+                cursor: "pointer",
+              }}
+            >
+              ×
+            </button>
+            <h2>Game Rules</h2>
+            <ul>
+              <li>Guess the correct Marvel character.</li>
+              <li>You have 15 attempts per round.</li>
+              <li>Clues will appear on incorrect guesses.</li>
+            </ul>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

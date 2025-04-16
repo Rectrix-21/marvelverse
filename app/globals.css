@@ -1,0 +1,73 @@
+:root {
+    color-scheme: light !important;
+  }
+
+body {
+    position: relative;
+    font-family: var(--font-marvel), sans-serif;
+    z-index: 1;
+    background: none; /* Remove any conflicting background */
+}
+
+@font-face {
+    font-family: 'Marvel';
+    src: url('/fonts/Marvel-Regular.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+  }
+  
+  #bgVideo {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -1;
+}
+
+.page-container {
+  position: relative;
+  z-index: 10;
+  opacity: 0;
+  animation: fadeIn 2s forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+table,
+th,
+td {
+  font-size: .75rem !important;
+  line-height: 1;
+}
+th,
+td {
+  padding: 10px 15px;
+}
+
+th {
+  width: 100px;
+}
+
+button {
+  font-family: var(--font-marvel) !important;
+}
+
+input,
+textarea {
+  font-family: var(--font-marvel) !important;
+  background-color: black !important;
+  color: rgb(255, 255, 255) !important;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
