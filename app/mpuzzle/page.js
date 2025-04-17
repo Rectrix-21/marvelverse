@@ -321,7 +321,7 @@ export default function MarvelPuzzle() {
       </Link>
       <div style={{ textAlign: "center", width: "100%" }}>
         <h1 style={{ fontSize: "2rem", color: "rgb(0, 144, 163)", textAlign:"center" }}>
-          Marvel Puzzle - {mode.charAt(0).toUpperCase() + mode.slice(1)} Mode | Round {round} of {TOTAL_ROUNDS}
+          Fragmentum - {mode.charAt(0).toUpperCase() + mode.slice(1)} Mode | Round {round} of {TOTAL_ROUNDS}
           <span
             onClick={toggleRulesPopup}
             title="How to play"

@@ -759,7 +759,7 @@ export default function MCUGuesser() {
                 color: "rgb(0,144,163)",
               }}
             >
-              Marvel Guesser
+              Unmasked
             </h1>
             <p
               style={{

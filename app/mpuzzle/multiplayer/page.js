@@ -642,7 +642,7 @@ export default function MarvelPuzzle() {
             color: "rgb(0,144,163)",
           }}
         >
-          Marvel Puzzle - {mode ? mode.charAt(0).toUpperCase() + mode.slice(1) : "Select Difficulty"} Mode | Round {round} of {TOTAL_ROUNDS}
+          Fragmentum - {mode ? mode.charAt(0).toUpperCase() + mode.slice(1) : "Select Difficulty"} Mode | Round {round} of {TOTAL_ROUNDS}
         </h1>
         <p style={{ fontSize: "1.3rem", marginBottom: "1.5rem" }}>
           Time Left: {timeLeft} seconds | Score: {score}

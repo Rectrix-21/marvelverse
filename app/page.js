@@ -32,10 +32,22 @@ export default function Home() {
         }}
       >
         <h1 className={styles.header}>Marvelverse</h1>
-        <h1 style={{ fontSize: "3rem", marginBottom: "20px", color: "rgb(0, 176, 199)" }}>
+        <h1
+          style={{
+            fontSize: "3rem",
+            marginBottom: "20px",
+            color: "rgb(0, 176, 199)",
+          }}
+        >
           Welcome Summoner
         </h1>
-        <h2 style={{ fontSize: "2rem", marginBottom: "150px", color: "rgb(0, 176, 199)" }}>
+        <h2
+          style={{
+            fontSize: "2rem",
+            marginBottom: "150px",
+            color: "rgb(0, 176, 199)",
+          }}
+        >
           Choose a Game Mode:
         </h2>
         {/* Wrap the game mode cards in a flex row container */}
@@ -63,7 +75,7 @@ export default function Home() {
             }}
           >
             <h3 style={{ fontSize: "1.8rem", color: "rgb(0, 144, 163)" }}>
-              Marvel Guesser
+              Unmasked
             </h3>
             <p
               style={{
@@ -134,7 +146,7 @@ export default function Home() {
             }}
           >
             <h3 style={{ fontSize: "1.8rem", color: "rgb(0, 144, 163)" }}>
-              Marvel Puzzle
+              Fragmentum
             </h3>
             <p
               style={{
@@ -193,6 +205,61 @@ export default function Home() {
         </div>
         {/* Optionally embed the Quiz component: <Quiz /> */}
       </div>
+      <footer
+        style={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          textAlign: "center",
+          padding: "15px",
+          color: "#fff",
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          zIndex: 1000,
+        }}
+      >
+        <Link href="/footer/about" legacyBehavior>
+          <a
+            style={{
+              color: "rgb(0, 176, 199)",
+              textDecoration: "none",
+              fontSize: "0.85rem",
+            }}
+            onMouseOver={e => (e.currentTarget.style.textDecoration = "underline")}
+            onMouseOut={e => (e.currentTarget.style.textDecoration = "none")}
+          >
+            About
+          </a>
+        </Link>
+        <span style={{ margin: "0 15px", color: "#fff" }}>|</span>
+        <Link href="/footer/contact" legacyBehavior>
+          <a
+            style={{
+              color: "rgb(0, 176, 199)",
+              textDecoration: "none",
+              fontSize: "0.85rem",
+            }}
+            onMouseOver={e => (e.currentTarget.style.textDecoration = "underline")}
+            onMouseOut={e => (e.currentTarget.style.textDecoration = "none")}
+          >
+            Contact
+          </a>
+        </Link>
+        <span style={{ margin: "0 15px", color: "#fff" }}>|</span>
+        <Link href="/footer/suggest" legacyBehavior>
+          <a
+            style={{
+              color: "rgb(0, 176, 199)",
+              textDecoration: "none",
+              fontSize: "0.85rem",
+            }}
+            onMouseOver={e => (e.currentTarget.style.textDecoration = "underline")}
+            onMouseOut={e => (e.currentTarget.style.textDecoration = "none")}
+          >
+            Suggest a Game
+          </a>
+        </Link>
+      </footer>
     </>
   );
 }

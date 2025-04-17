@@ -497,7 +497,7 @@ export default function MCUGuesser() {
             color: "rgb(0, 144, 163)",
           }}
         >
-          Marvel Guesser{" "}
+          Unmasked{" "}
           <span
             onClick={toggleRulesPopup}
             title="How to play"
