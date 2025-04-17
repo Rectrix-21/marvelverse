@@ -169,7 +169,7 @@ export default function MCUGuesser() {
       }, 1000);
     }
     return () => clearInterval(timerRef.current);
-  }, [joined, sessionData, currentRound, sessionId, handleNextRound]);
+  }, [joined, sessionData, currentRound, sessionId]);
 
   // Fetch suggestions based on the current guess.
   useEffect(() => {

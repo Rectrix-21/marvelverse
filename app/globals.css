@@ -1,56 +1,42 @@
 :root {
-    color-scheme: light !important;
-  }
+  color-scheme: light !important;
+}
 
 body {
-    position: relative;
-    font-family: var(--font-marvel), sans-serif;
-    z-index: 1;
-    background: none; /* Remove any conflicting background */
+  position: relative;
+  font-family: var(--font-marvel), sans-serif;
+  z-index: 1;
+  background: none;
 }
 
 @font-face {
-    font-family: 'Marvel';
-    src: url('/fonts/Marvel-Regular.ttf') format('truetype');
-    font-weight: 900;
-    font-style: normal;
-  }
-  
-  #bgVideo {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
-    z-index: -1;
+  font-family: "Marvel";
+  src: url("/fonts/Marvel-Regular.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
 }
 
-.page-container {
-  position: relative;
-  z-index: 10;
-  opacity: 0;
-  animation: fadeIn 2s forwards;
-}
-
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
+#bgVideo {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: -1;
 }
 
 table,
 th,
 td {
-  font-size: .75rem !important;
+  font-size: 0.75rem !important;
   line-height: 1;
 }
 th,
 td {
   padding: 10px 15px;
 }
-
 th {
   width: 100px;
 }
@@ -63,11 +49,34 @@ input,
 textarea {
   font-family: var(--font-marvel) !important;
   background-color: black !important;
-  color: rgb(255, 255, 255) !important;
+  color: #fff !important;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+}
+
+.page-transition {
+  position: relative;
+}
+
+/* enter */
+.fade-enter {
+  opacity: 0;
+}
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 300ms ease-in-out;
+}
+
+/* exit */
+.fade-exit {
+  opacity: 1;
+}
+.fade-exit-active {
+  opacity: 0;
+  transition: opacity 300ms ease-in-out;
 }
