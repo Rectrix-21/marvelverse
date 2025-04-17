@@ -51,7 +51,7 @@ export default function About() {
 
       <h2 style={{ marginTop: "50px" }}>Who Am I?</h2>
       <p>
-      I'm a game enthusiast and a lifelong Marvel fan, AK, who combined both passions to build this project. This started as a college assignment, but instead of going the usual route, I wanted to create something fun and interactive—a game I’d actually want to play. I’ve always loved coding games, and with Marvel being a huge part of what I enjoy, this was an opportunity to bring both worlds together.</p>
+      I&apos;m a game enthusiast and a lifelong Marvel fan, AK, who combined both passions to build this project. This started as a college assignment, but instead of going the usual route, I wanted to create something fun and interactive—a game I&rsquo;d actually want to play. I&rsquo;ve always loved coding games, and with Marvel being a huge part of what I enjoy, this was an opportunity to bring both worlds together.</p>
     </div>
 
     
