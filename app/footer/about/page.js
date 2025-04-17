@@ -46,12 +46,13 @@ export default function About() {
         Test your knowledge across multiple games. <span style={{ color: "rgb(0, 176, 199)" }}>Unmasked</span> shows you a picture of a Marvel character—can you guess who it is?
       </p>
       <p>
-        <span style={{ color: "rgb(0, 176, 199)" }}>Fragmentum</span> challenges you to piece together scattered image fragments to reveal iconic Marvel faces. Whether you're into comics, movies, or both, it's time to prove how well you really know the Marvel Universe.
+        <span style={{ color: "rgb(0, 176, 199)" }}>Fragmentum</span> challenges you to piece together scattered image fragments to reveal iconic Marvel faces. Whether you&apos;re into comics, movies, or both, it&rsquo;s time to prove how well you really know the Marvel Universe.
       </p>
 
       <h2 style={{ marginTop: "50px" }}>Who Am I?</h2>
       <p>
-      I&apos;m a game enthusiast and a lifelong Marvel fan, AK, who combined both passions to build this project. This started as a college assignment, but instead of going the usual route, I wanted to create something fun and interactive—a game I&rsquo;d actually want to play. I&rsquo;ve always loved coding games, and with Marvel being a huge part of what I enjoy, this was an opportunity to bring both worlds together.</p>
+        I&apos;m a game enthusiast and a lifelong Marvel fan, AK, who combined both passions to build this project. This started as a college assignment, but instead of going the usual route, I wanted to create something fun and interactive—a game I&rsquo;d actually want to play. I&rsquo;ve always loved coding games, and with Marvel being a huge part of what I enjoy, this was an opportunity to bring both worlds together.
+      </p>
     </div>
 
     
