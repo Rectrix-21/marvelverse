@@ -336,6 +336,7 @@ export default function Unmasked() {
 
   const renderComparisonTable = () => {
     return (
+      <div className="table-responsive">
       <table
         style={{
           width: "100%",
@@ -410,6 +411,7 @@ export default function Unmasked() {
           ))}
         </tbody>
       </table>
+      </div>
     );
   };
 

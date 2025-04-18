@@ -73,15 +73,25 @@ body {
 }
 
 @media (max-width: 480px) {
-  table, th, td {
+  /* Replace vertical stacking with a scrollable container */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Make the table itself full‑width but allow inner scrolling */
+  .table-responsive table {
     display: block;
-    width: 100% !important;
-    box-sizing: border-box;
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px; /* adjust to your typical table width */
   }
-  th {
+
+  /* Keep cells in their normal layout inside the scrollable table */
+  .table-responsive th,
+  .table-responsive td {
+    display: table-cell;
     width: auto !important;
-  }
-  .page-transition {
-    padding: 0 !important;
+    box-sizing: border-box;
   }
 }
