@@ -335,84 +335,6 @@ export default function Unmasked() {
   };
 
   const renderComparisonTable = () => {
-    return (
-      <div className="table-responsive">
-      <table
-        style={{
-          width: "100%",
-          borderCollapse: "collapse",
-          marginTop: "20px",
-          color: "#fff",
-        }}
-      >
-        <thead>
-          <tr style={{ backgroundColor: "rgba(0, 0, 0, 0.75)" }}>
-            {comparisonProperties.map((prop) => (
-              <th
-                key={prop.label}
-                style={{
-                  border: "1px solid rgba(0, 200, 214, 0.75)",
-                  padding: "10px 15px",
-                  textAlign: "center",
-                  fontSize: "1rem",
-                }}
-              >
-                {prop.label}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {comparisons.map((rowData, rowIndex) => (
-            <tr
-              key={rowIndex}
-              style={{
-                backgroundColor:
-                  rowIndex % 2 === 0
-                    ? "rgba(10, 0, 0, 0.75)"
-                    : "rgba(10, 0, 0, 0.8)",
-              }}
-            >
-              {rowData.map((cell) => {
-                let cellStyle = {
-                  border: "1px solid rgba(0, 200, 214, 0.75)",
-                  padding: "10px 15px",
-                  textAlign: "center",
-                  fontSize: "0.95rem",
-                  color: "tomato",
-                };
-                let content = cell.guessedVal;
-                if (
-                  cell.guessedVal !== "N/A" &&
-                  cell.actualVal &&
-                  cell.type === "text" &&
-                  cell.guessedVal.toLowerCase() === cell.actualVal.toLowerCase()
-                ) {
-                  cellStyle.color = "lightgreen";
-                }
-                if (cell.type === "number") {
-                  const guessedNum = Number(cell.guessedVal);
-                  const actualNum = Number(cell.actualVal);
-                  let arrow = "";
-                  if (!isNaN(guessedNum) && !isNaN(actualNum)) {
-                    if (guessedNum < actualNum) arrow = " ⬆️";
-                    else if (guessedNum > actualNum) arrow = " ⬇️";
-                    else cellStyle.color = "lightgreen";
-                  }
-                  content = `${cell.guessedVal}${arrow}`;
-                }
-                return (
-                  <td key={cell.label} style={cellStyle}>
-                    {content}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      </div>
-    );
   };
 
   if (loading) {
@@ -775,7 +697,83 @@ export default function Unmasked() {
         )}
       </div>
       {/* Comparison Table Panel */}
-      <div>{comparisons.length > 0 ? renderComparisonTable() : null}</div>
+      {comparisons.length > 0 && (
+        <div className="table-responsive">
+        <table
+          style={{
+            borderCollapse: "collapse",
+            marginTop: "20px",
+            color: "#fff",
+          }}
+        >
+          <thead>
+            <tr style={{ backgroundColor: "rgba(0, 0, 0, 0.75)" }}>
+              {comparisonProperties.map((prop) => (
+                <th
+                  key={prop.label}
+                  style={{
+                    border: "1px solid rgba(0, 200, 214, 0.75)",
+                    padding: "10px 15px",
+                    textAlign: "center",
+                    fontSize: "1rem",
+                  }}
+                >
+                  {prop.label}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {comparisons.map((rowData, rowIndex) => (
+              <tr
+                key={rowIndex}
+                style={{
+                  backgroundColor:
+                    rowIndex % 2 === 0
+                      ? "rgba(10, 0, 0, 0.75)"
+                      : "rgba(10, 0, 0, 0.8)",
+                }}
+              >
+                {rowData.map((cell) => {
+                  let cellStyle = {
+                    border: "1px solid rgba(0, 200, 214, 0.75)",
+                    padding: "10px 15px",
+                    textAlign: "center",
+                    fontSize: "0.95rem",
+                    color: "tomato",
+                  };
+                  let content = cell.guessedVal;
+                  if (
+                    cell.guessedVal !== "N/A" &&
+                    cell.actualVal &&
+                    cell.type === "text" &&
+                    cell.guessedVal.toLowerCase() === cell.actualVal.toLowerCase()
+                  ) {
+                    cellStyle.color = "lightgreen";
+                  }
+                  if (cell.type === "number") {
+                    const guessedNum = Number(cell.guessedVal);
+                    const actualNum = Number(cell.actualVal);
+                    let arrow = "";
+                    if (!isNaN(guessedNum) && !isNaN(actualNum)) {
+                      if (guessedNum < actualNum) arrow = " ⬆️";
+                      else if (guessedNum > actualNum) arrow = " ⬇️";
+                      else cellStyle.color = "lightgreen";
+                    }
+                    content = `${cell.guessedVal}${arrow}`;
+                  }
+                  return (
+                    <td key={cell.label} style={cellStyle}>
+                      {content}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        </div>
+      )}
 
       {/* Rules Popup */}
       {showRules && (

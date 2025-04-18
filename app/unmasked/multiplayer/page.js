@@ -130,13 +130,16 @@ export default function Unmasked() {
   // Realtime subscription for session updates.
   useEffect(() => {
     if (sessionId) {
-      const unsub = onSnapshot(doc(db, "multiplayerSessions", sessionId), (docSnap) => {
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setSessionData(data);
-          if (data.updateMsg) setUpdateMsg(data.updateMsg);
+      const unsub = onSnapshot(
+        doc(db, "multiplayerSessions", sessionId),
+        (docSnap) => {
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            setSessionData(data);
+            if (data.updateMsg) setUpdateMsg(data.updateMsg);
+          }
         }
-      });
+      );
       return () => unsub();
     }
   }, [sessionId]);
@@ -215,9 +218,7 @@ export default function Unmasked() {
       setImgErrorCount((c) => c + 1);
       let other;
       do {
-        other = characters[
-          Math.floor(Math.random() * characters.length)
-        ];
+        other = characters[Math.floor(Math.random() * characters.length)];
       } while (other.name === selectedCharacter.name);
       setSelectedCharacter(other);
     }
@@ -242,18 +243,28 @@ export default function Unmasked() {
       if (mcuMovieClues[selectedCharacter.name]) {
         newClues.push(mcuMovieClues[selectedCharacter.name]);
       } else {
-        newClues.push("This character is part of the Marvel Cinematic Universe.");
+        newClues.push(
+          "This character is part of the Marvel Cinematic Universe."
+        );
       }
       if (bio["first-appearance"] && bio["first-appearance"] !== "-") {
         newClues.push(
-          `${pronoun.subject} made ${pronoun.possessive.toLowerCase()} debut in ${bio["first-appearance"]}.`
+          `${
+            pronoun.subject
+          } made ${pronoun.possessive.toLowerCase()} debut in ${
+            bio["first-appearance"]
+          }.`
         );
       }
       if (bio["place-of-birth"] && bio["place-of-birth"] !== "-") {
-        newClues.push(`${pronoun.subject} was born in ${bio["place-of-birth"]}.`);
+        newClues.push(
+          `${pronoun.subject} was born in ${bio["place-of-birth"]}.`
+        );
       }
       if (bio["full-name"] && bio["full-name"] !== "-") {
-        newClues.push(`${pronoun.possessive} full name is ${bio["full-name"]}.`);
+        newClues.push(
+          `${pronoun.possessive} full name is ${bio["full-name"]}.`
+        );
       }
       setClues(newClues);
       setClueIndex(0);
@@ -444,84 +455,7 @@ export default function Unmasked() {
     setTimer(30);
   };
 
-  const renderComparisonTable = () => {
-    return (
-      <table
-        style={{
-          width: "100%",
-          borderCollapse: "collapse",
-          marginTop: "20px",
-          color: "#fff",
-        }}
-      >
-        <thead>
-          <tr style={{ backgroundColor: "rgba(0, 0, 0, 0.75)" }}>
-            {comparisonProperties.map((prop) => (
-              <th
-                key={prop.label}
-                style={{
-                  border: "1px solid rgba(0, 200, 214, 0.75)",
-                  padding: "10px 15px",
-                  textAlign: "center",
-                  fontSize: "1rem",
-                }}
-              >
-                {prop.label}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {comparisons.map((rowData, rowIndex) => (
-            <tr
-              key={rowIndex}
-              style={{
-                backgroundColor:
-                  rowIndex % 2 === 0
-                    ? "rgba(10, 0, 0, 0.75)"
-                    : "rgba(10, 0, 0, 0.8)",
-              }}
-            >
-              {rowData.map((cell) => {
-                let cellStyle = {
-                  border: "1px solid rgba(0, 200, 214, 0.75)",
-                  padding: "10px 15px",
-                  textAlign: "center",
-                  fontSize: "0.95rem",
-                  color: "tomato",
-                };
-                let content = cell.guessedVal;
-                if (
-                  cell.guessedVal !== "N/A" &&
-                  cell.actualVal &&
-                  cell.type === "text" &&
-                  cell.guessedVal.toLowerCase() === cell.actualVal.toLowerCase()
-                ) {
-                  cellStyle.color = "lightgreen";
-                }
-                if (cell.type === "number") {
-                  const guessedNum = Number(cell.guessedVal);
-                  const actualNum = Number(cell.actualVal);
-                  let arrow = "";
-                  if (!isNaN(guessedNum) && !isNaN(actualNum)) {
-                    if (guessedNum < actualNum) arrow = " ⬆️";
-                    else if (guessedNum > actualNum) arrow = " ⬇️";
-                    else cellStyle.color = "lightgreen";
-                  }
-                  content = `${cell.guessedVal}${arrow}`;
-                }
-                return (
-                  <td key={cell.label} style={cellStyle}>
-                    {content}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    );
-  };
+  const renderComparisonTable = () => {};
 
   // If session exists but less than 2 players, show waiting screen.
   if (joined && sessionData && sessionData.players?.length < 2) {
@@ -632,7 +566,8 @@ export default function Unmasked() {
               style={{
                 padding: "10px 20px",
                 marginRight: "10px",
-                backgroundColor: mode === "create" ? "rgb(155, 0, 0)" : "transparent",
+                backgroundColor:
+                  mode === "create" ? "rgb(155, 0, 0)" : "transparent",
                 color: "#fff",
                 border: "1px solid rgb(155, 0, 0)",
                 borderRadius: "6px",
@@ -646,7 +581,8 @@ export default function Unmasked() {
               onClick={() => setMode("join")}
               style={{
                 padding: "10px 20px",
-                backgroundColor: mode === "join" ? "rgb(155, 0, 0)" : "transparent",
+                backgroundColor:
+                  mode === "join" ? "rgb(155, 0, 0)" : "transparent",
                 color: "#fff",
                 border: "1px solid rgb(155, 0, 0)",
                 borderRadius: "6px",
@@ -737,7 +673,7 @@ export default function Unmasked() {
         </div>
       ) : (
         // Main game panel (multiplayer mode)
-        <div
+        <div className="multiplayer-wrapper"
           style={{
             display: "flex",
             flexWrap: "wrap",
@@ -752,7 +688,9 @@ export default function Unmasked() {
             lineHeight: "1.6",
           }}
         >
-          <div style={{ width: "100%", textAlign: "left", marginBottom: "20px" }}>
+          <div
+            style={{ width: "100%", textAlign: "left", marginBottom: "20px" }}
+          >
             <h2>Session: {sessionId}</h2>
             {updateMsg && (
               <p style={{ color: "rgb(0,144,163)", fontSize: "1.2rem" }}>
@@ -765,7 +703,8 @@ export default function Unmasked() {
             style={{
               flex: "2 1 600px",
               padding: "20px",
-              background: "linear-gradient(180deg, rgb(10, 0, 0), rgb(37, 0, 0))",
+              background:
+                "linear-gradient(180deg, rgb(10, 0, 0), rgb(37, 0, 0))",
               borderRadius: "8px",
               boxShadow: "0 2px 8px rgb(255, 0, 0)",
             }}
@@ -787,7 +726,8 @@ export default function Unmasked() {
                 fontSize: "1.3rem",
               }}
             >
-              Round: {currentRound} of 10 | Attempts Left: {attemptsLeft} | Score: {score}
+              Round: {currentRound} of 10 | Attempts Left: {attemptsLeft} |
+              Score: {score}
             </p>
             <div style={{ textAlign: "center", marginBottom: "30px" }}>
               {selectedCharacter.image && selectedCharacter.image.url ? (
@@ -862,10 +802,12 @@ export default function Unmasked() {
                           transition: "background-color 0.3s",
                         }}
                         onMouseOver={(e) =>
-                          (e.currentTarget.style.backgroundColor = "rgb(100,0,0)")
+                          (e.currentTarget.style.backgroundColor =
+                            "rgb(100,0,0)")
                         }
                         onMouseOut={(e) =>
-                          (e.currentTarget.style.backgroundColor = "rgb(155,0,0)")
+                          (e.currentTarget.style.backgroundColor =
+                            "rgb(155,0,0)")
                         }
                       >
                         Submit Guess
@@ -1015,7 +957,8 @@ export default function Unmasked() {
                   style={{
                     margin: "30px auto",
                     maxWidth: "500px",
-                    background: "linear-gradient(135deg, rgb(59, 0, 0), rgba(49, 41, 41, 0.61))",
+                    background:
+                      "linear-gradient(135deg, rgb(59, 0, 0), rgba(49, 41, 41, 0.61))",
                     borderRadius: "10px",
                     padding: "20px",
                     boxShadow: "0 4px 10px rgba(0, 0, 0, 0.5)",
@@ -1054,7 +997,9 @@ export default function Unmasked() {
                               borderBottom: "2px solid rgba(0, 0, 0, 0.75)",
                             }}
                           >
-                            <span style={{ fontWeight: "bold", color: "#ffcc00" }}>
+                            <span
+                              style={{ fontWeight: "bold", color: "#ffcc00" }}
+                            >
                               {player}
                             </span>
                             : {score}
@@ -1066,10 +1011,87 @@ export default function Unmasked() {
               </div>
             )}
           </div>
+          {/* Comparison Table Panel */}
+          {comparisons.length > 0 && (
+            <div className="table-responsive">
+              <table
+                style={{
+                  borderCollapse: "collapse",
+                  marginTop: "20px",
+                  color: "#fff",
+                }}
+              >
+                <thead>
+                  <tr style={{ backgroundColor: "rgba(0, 0, 0, 0.75)" }}>
+                    {comparisonProperties.map((prop) => (
+                      <th
+                        key={prop.label}
+                        style={{
+                          border: "1px solid rgba(0, 200, 214, 0.75)",
+                          padding: "10px 15px",
+                          textAlign: "center",
+                          fontSize: "1rem",
+                        }}
+                      >
+                        {prop.label}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {comparisons.map((rowData, rowIndex) => (
+                    <tr
+                      key={rowIndex}
+                      style={{
+                        backgroundColor:
+                          rowIndex % 2 === 0
+                            ? "rgba(10, 0, 0, 0.75)"
+                            : "rgba(10, 0, 0, 0.8)",
+                      }}
+                    >
+                      {rowData.map((cell) => {
+                        let cellStyle = {
+                          border: "1px solid rgba(0, 200, 214, 0.75)",
+                          padding: "10px 15px",
+                          textAlign: "center",
+                          fontSize: "0.95rem",
+                          color: "tomato",
+                        };
+                        let content = cell.guessedVal;
+                        if (
+                          cell.guessedVal !== "N/A" &&
+                          cell.actualVal &&
+                          cell.type === "text" &&
+                          cell.guessedVal.toLowerCase() ===
+                            cell.actualVal.toLowerCase()
+                        ) {
+                          cellStyle.color = "lightgreen";
+                        }
+                        if (cell.type === "number") {
+                          const guessedNum = Number(cell.guessedVal);
+                          const actualNum = Number(cell.actualVal);
+                          let arrow = "";
+                          if (!isNaN(guessedNum) && !isNaN(actualNum)) {
+                            if (guessedNum < actualNum) arrow = " ⬆️";
+                            else if (guessedNum > actualNum) arrow = " ⬇️";
+                            else cellStyle.color = "lightgreen";
+                          }
+                          content = `${cell.guessedVal}${arrow}`;
+                        }
+                        return (
+                          <td key={cell.label} style={cellStyle}>
+                            {content}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       )}
-      {/* Comparison Table Panel */}
-      <div>{comparisons.length > 0 ? renderComparisonTable() : null}</div>
     </div>
   );
 }

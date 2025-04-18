@@ -27,8 +27,9 @@ export default function Home() {
           justifyContent: "center",
           padding: "40px",
           color: "#fff",
-          boxSizing: "border-box", // ensures padding doesn't add extra scrollable space
-          overflowY: "auto",       // only show vertical scrolling if needed
+          boxSizing: "border-box",
+          overflowY: "auto",
+          overflowX: "hidden" 
         }}
       >
         <h1 className={styles.header}>Marvelversed</h1>
@@ -210,12 +211,15 @@ export default function Home() {
           position: "fixed",
           bottom: 0,
           left: 0,
-          width: "100%",
           textAlign: "center",
           padding: "15px",
           color: "#fff",
           backgroundColor: "rgba(0, 0, 0, 0.5)",
           zIndex: 1000,
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <Link href="/about" legacyBehavior>

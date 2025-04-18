@@ -5,10 +5,13 @@
 body {
   position: relative;
   font-family: var(--font-marvel), sans-serif;
-  z-index: 1;
+  margin: 0;
+  padding: 0;
   background: none;
+  z-index: 1;
 }
 
+/* custom font */
 @font-face {
   font-family: "Marvel";
   src: url("/fonts/Marvel-Regular.ttf") format("truetype");
@@ -16,6 +19,7 @@ body {
   font-style: normal;
 }
 
+/* background video */
 #bgVideo {
   position: fixed;
   right: 0;
@@ -27,71 +31,83 @@ body {
   z-index: -1;
 }
 
+/* base table styling */
 table,
 th,
 td {
   font-size: 0.75rem !important;
   line-height: 1;
+  border-collapse: collapse;
 }
 th,
 td {
   padding: 10px 15px;
 }
-th {
-  width: 100px;
-}
 
-button {
-  font-family: var(--font-marvel) !important;
-}
-
+/* buttons and form inputs use Marvel font */
+button,
 input,
 textarea {
   font-family: var(--font-marvel) !important;
+}
+input,
+textarea {
   background-color: black !important;
   color: #fff !important;
 }
 
+/* prevent page‐wide horizontal scrolling */
 html,
 body {
-  margin: 0;
-  padding: 0;
   overflow-x: hidden;
 }
 
+/* wrapper around each table to enable horizontal scroll if needed */
+.table-responsive {
+  display: block;       /* Allow overflow */
+  width: 100%;
+  overflow-x: visible;  
+  overflow-y: auto;   /* Only this scrolls horizontally */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling for mobile */
+}
+.table-responsive table {
+  width: 100%;   /* Size to content */
+  border-collapse: collapse;
+  margin: 0 auto;       /* Center the table */
+}
+.table-responsive th,
+.table-responsive td {
+  white-space: nowrap;       /* prevent wrapping inside cells */
+}
+
+/* mobile adjustments */
 @media (max-width: 600px) {
   body {
     padding: 0 10px;
     font-size: 0.9rem;
   }
-  /* if you moved your footer into CSS rather than inline, for example: */
   footer {
     position: relative !important;
     padding: 10px !important;
     font-size: 0.75rem !important;
   }
-}
 
-@media (max-width: 480px) {
-  /* Replace vertical stacking with a scrollable container */
+  .multiplayer-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 10px !important;
+  }
+
   .table-responsive {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  /* Make the table itself full‑width but allow inner scrolling */
-  .table-responsive table {
-    display: block;
+    display: block;       /* Allow overflow */
     width: 100%;
-    border-collapse: collapse;
-    min-width: 600px; /* adjust to your typical table width */
+    overflow-x: visible;     /* Only this scrolls horizontally */
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling for mobile */
   }
-
-  /* Keep cells in their normal layout inside the scrollable table */
-  .table-responsive th,
-  .table-responsive td {
-    display: table-cell;
-    width: auto !important;
-    box-sizing: border-box;
+  .table-responsive table {
+    width: 100%;   /* Size to content */
+    border-collapse: collapse;
+    margin: 0 auto;       /* Center the table */
   }
 }
