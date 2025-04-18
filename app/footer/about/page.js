@@ -38,9 +38,9 @@ export default function About() {
       </Link>
 
       <h1>About</h1>
-      <h2 style={{ marginTop: "50px" }}>What is <span style={{ color: "rgb(155, 0, 0)" }}>Marvelverse</span>?</h2>
+      <h2 style={{ marginTop: "50px" }}>What is <span style={{ color: "rgb(155, 0, 0)" }}>Marvelversed</span>?</h2>
       <p>
-        Marvelverse is a Marvel-themed website designed for fans who know their heroes, villains, and everything in between.
+        Marvelversed is a Marvel-themed website designed for fans who know their heroes, villains, and everything in between.
       </p>
       <p>
         Test your knowledge across multiple games. <span style={{ color: "rgb(0, 176, 199)" }}>Unmasked</span> shows you a picture of a Marvel character—can you guess who it is?

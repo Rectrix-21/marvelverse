@@ -31,7 +31,7 @@ export default function Home() {
           overflowY: "auto",       // only show vertical scrolling if needed
         }}
       >
-        <h1 className={styles.header}>Marvelverse</h1>
+        <h1 className={styles.header}>Marvelversed</h1>
         <h1
           style={{
             fontSize: "3rem",
