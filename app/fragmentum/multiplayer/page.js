@@ -444,6 +444,7 @@ export default function Fragmentum() {
               style={{
                 padding: "10px 20px",
                 marginRight: "10px",
+                marginBottom: "20px",
                 cursor: "pointer",
                 backgroundColor: "rgb(155,0,0)",
                 color: "#fff",
@@ -469,6 +470,7 @@ export default function Fragmentum() {
               style={{
                 padding: "10px 20px",
                 marginRight: "10px",
+                marginBottom: "20px",
                 cursor: "pointer",
                 backgroundColor: "rgb(155,0,0)",
                 color: "#fff",
