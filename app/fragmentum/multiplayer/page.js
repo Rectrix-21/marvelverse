@@ -30,7 +30,9 @@ export default function Fragmentum() {
   const [timeLeft, setTimeLeft] = useState(TIME_LIMIT);
   const [score, setScore] = useState(0);
   const [imgErrorCount, setImgErrorCount] = useState(0);
+  const [touchStart, setTouchStart] = useState({ x: 0, y: 0 });
   const [dragIndex, setDragIndex] = useState(null);
+  const [touchOverIndex, setTouchOverIndex] = useState(null);
 
   // Multiplayer Session States
   const [username, setUsername] = useState("");
@@ -96,14 +98,65 @@ export default function Fragmentum() {
     }
   };
 
+  function handleSwipeStart(e) {
+    const t = e.touches[0];
+    setTouchStart({ x: t.clientX, y: t.clientY });
+  }
+  // 2) on lift, compute delta and pick a direction
+  function handleSwipeEnd(e, idx) {
+    const t = e.changedTouches[0];
+    const dx = t.clientX - touchStart.x;
+    const dy = t.clientY - touchStart.y;
+    if (Math.hypot(dx, dy) < 30) return; // no big swipe → ignore
+    const dir =
+      Math.abs(dx) > Math.abs(dy)
+        ? dx > 0
+          ? "right"
+          : "left"
+        : dy > 0
+        ? "down"
+        : "up";
+    slideTile(idx, dir);
+  }
+  // 3) swap with the neighbor in that direction
+  function slideTile(idx, dir) {
+    const row = Math.floor(idx / gridSize),
+      col = idx % gridSize;
+    let target;
+    if (dir === "left" && col > 0) target = idx - 1;
+    if (dir === "right" && col < gridSize - 1) target = idx + 1;
+    if (dir === "up" && row > 0) target = idx - gridSize;
+    if (dir === "down" && row < gridSize - 1) target = idx + gridSize;
+    if (target == null) return;
+    if (pieces[target].locked || pieces[idx].locked) return;
+    const newPieces = [...pieces];
+    [newPieces[idx], newPieces[target]] = [newPieces[target], newPieces[idx]];
+    setPieces(newPieces);
+  }
+
+  function handleTouchMove(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    // figure out which tile is under the finger
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    const idx = el?.dataset?.index;
+    if (idx != null) setTouchOverIndex(Number(idx));
+  }
+
+  const toggleRulesPopup = () => {
+    setShowRules((prev) => !prev);
+  };
+
   const handleTouchStart = (e, index) => {
     e.preventDefault();
     setDragIndex(index);
   };
-  const handleTouchEnd = (e, dropIndex) => {
+  const handleTouchEnd = (e) => {
     e.preventDefault();
-    if (dragIndex === null || pieces[dropIndex].locked) {
+    const dropIndex = touchOverIndex ?? dragIndex;
+    if (dragIndex == null || pieces[dropIndex].locked) {
       setDragIndex(null);
+      setTouchOverIndex(null);
       return;
     }
     const newPieces = [...pieces];
@@ -113,6 +166,7 @@ export default function Fragmentum() {
     ];
     setPieces(newPieces);
     setDragIndex(null);
+    setTouchOverIndex(null);
   };
 
   // Realtime subscription for session updates.
@@ -722,29 +776,39 @@ export default function Fragmentum() {
             {pieces.map((piece, index) => {
               const correctRow = Math.floor(piece.order / gridSize);
               const correctCol = piece.order % gridSize;
-              const bgPosX = -(correctCol * tileSize) + "px";
-              const bgPosY = -(correctRow * tileSize) + "px";
+              const bgPosX = `-${correctCol * tileSize}px`;
+              const bgPosY = `-${correctRow * tileSize}px`;
               return (
                 <div
+                  data-index={index}
                   key={piece.id}
                   draggable={!piece.locked}
                   onDragStart={(e) => handleDragStart(e, index)}
                   onDragOver={handleDragOver}
                   onDrop={(e) => handleDrop(e, index)}
-                  // 3) hook touch events
-                  onTouchStart={(e) => handleTouchStart(e, index)}
-                  onTouchEnd={(e) => handleTouchEnd(e, index)}
+                  // preserve your existing touch‐DnD
+                  onTouchStart={(e) => {
+                    handleTouchStart(e, index);
+                    handleSwipeStart(e);
+                  }}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={(e) => {
+                    handleTouchEnd(e, index);
+                    handleSwipeEnd(e, index);
+                  }}
                   style={{
-                    width: tileSize + "px",
-                    height: tileSize + "px",
+                    width: `${tileSize}px`,
+                    height: `${tileSize}px`,
                     backgroundImage: `url(${superhero.image.url})`,
-                    backgroundSize: `${gridSize * tileSize}px ${gridSize * tileSize}px`,
+                    backgroundSize: `${gridSize * tileSize}px ${
+                      gridSize * tileSize
+                    }px`,
                     backgroundPosition: `${bgPosX} ${bgPosY}`,
                     border: piece.locked ? "2px solid green" : "1px solid #000",
                     boxSizing: "border-box",
                     cursor: piece.locked ? "default" : "move",
                     opacity: piece.locked ? 0.8 : 1,
-                    touchAction: "none",  // prevent page swipe while dragging
+                    touchAction: "none", // prevents page scrolling during swipe
                   }}
                 ></div>
               );

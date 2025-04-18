@@ -216,6 +216,7 @@ export default function Home() {
           color: "#fff",
           backgroundColor: "rgba(0, 0, 0, 0.5)",
           zIndex: 1000,
+          width: "100%",
           display: "flex",
           flexDirection: "row",
           justifyContent: "center",

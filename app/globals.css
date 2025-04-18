@@ -64,31 +64,32 @@ body {
 
 /* wrapper around each table to enable horizontal scroll if needed */
 .table-responsive {
-  display: block;       /* Allow overflow */
+  display: block; /* Allow overflow */
   width: 100%;
-  overflow-x: visible;  
-  overflow-y: auto;   /* Only this scrolls horizontally */
+  overflow-x: visible;
+  overflow-y: auto; /* Only this scrolls horizontally */
   -webkit-overflow-scrolling: touch; /* Smooth scrolling for mobile */
 }
 .table-responsive table {
-  width: 100%;   /* Size to content */
+  width: 100%; /* Size to content */
   border-collapse: collapse;
-  margin: 0 auto;       /* Center the table */
+  margin: 0 auto; /* Center the table */
 }
 .table-responsive th,
 .table-responsive td {
-  white-space: nowrap;       /* prevent wrapping inside cells */
+  white-space: nowrap; /* prevent wrapping inside cells */
 }
 
 /* mobile adjustments */
 @media (max-width: 600px) {
   body {
-    padding: 0 10px;
+    padding: 0px 0px;
     font-size: 0.9rem;
+    text-align: center;
   }
   footer {
     position: relative !important;
-    padding: 10px !important;
+    padding: 10px 0px !important;
     font-size: 0.75rem !important;
   }
 
@@ -99,15 +100,15 @@ body {
   }
 
   .table-responsive {
-    display: block;       /* Allow overflow */
+    display: block; /* Allow overflow */
     width: 100%;
-    overflow-x: visible;     /* Only this scrolls horizontally */
+    overflow-x: visible; /* Only this scrolls horizontally */
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch; /* Smooth scrolling for mobile */
   }
   .table-responsive table {
-    width: 100%;   /* Size to content */
+    width: 100%; /* Size to content */
     border-collapse: collapse;
-    margin: 0 auto;       /* Center the table */
+    margin: 0 auto; /* Center the table */
   }
 }
