@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 
-export default function MarvelPuzzle() {
+export default function Fragmentum() {
   const TOTAL_ROUNDS = 5;
   const tileSize = 100; // pixels
   const ACCESS_TOKEN = "b7c79102f60865edb0f830afef67f183";
@@ -17,6 +17,7 @@ export default function MarvelPuzzle() {
   const [pieces, setPieces] = useState([]);
   const [message, setMessage] = useState("");
   const [showRules, setShowRules] = useState(false);
+  const [imgErrorCount, setImgErrorCount] = useState(0);
 
   const toggleRulesPopup = () => {
     setShowRules((prev) => !prev);
@@ -69,7 +70,18 @@ export default function MarvelPuzzle() {
       }
     }
     fetchSuperhero();
-  }, [round, mode]);
+  }, [round, mode, imgErrorCount]);
+
+  useEffect(() => {
+       if (!superhero?.image?.url) return;
+       const img = new Image();
+       img.src = superhero.image.url;
+       img.onerror = () => {
+         if (imgErrorCount < 3) {
+           setImgErrorCount((c) => c + 1);
+         }
+       };
+     }, [superhero]);
 
   // Generate puzzle pieces – only if mode, gridSize, and superhero exist.
   useEffect(() => {

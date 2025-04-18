@@ -13,7 +13,7 @@ import {
 } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 
-export default function MarvelPuzzle() {
+export default function Fragmentum() {
   const TOTAL_ROUNDS = 5;
   const tileSize = 100; // pixels
   const ACCESS_TOKEN = "b7c79102f60865edb0f830afef67f183";
@@ -29,6 +29,7 @@ export default function MarvelPuzzle() {
   const [message, setMessage] = useState("");
   const [timeLeft, setTimeLeft] = useState(TIME_LIMIT);
   const [score, setScore] = useState(0);
+  const [imgErrorCount, setImgErrorCount] = useState(0);
 
   // Multiplayer Session States
   const [username, setUsername] = useState("");
@@ -74,7 +75,11 @@ export default function MarvelPuzzle() {
       return;
     }
     try {
-      const sessionDocRef = doc(db, "multiplayerSessions", friendCode.toUpperCase());
+      const sessionDocRef = doc(
+        db,
+        "multiplayerSessions",
+        friendCode.toUpperCase()
+      );
       const docSnap = await getDoc(sessionDocRef);
       if (docSnap.exists()) {
         setSessionId(friendCode.toUpperCase());
@@ -93,19 +98,22 @@ export default function MarvelPuzzle() {
   // Realtime subscription for session updates.
   useEffect(() => {
     if (sessionId) {
-      const unsub = onSnapshot(doc(db, "multiplayerSessions", sessionId), (docSnap) => {
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setSessionData(data);
-          if (data.updateMsg) setUpdateMsg(data.updateMsg);
-          // Wait until at least 2 players have joined (host + opponent)
-          if (data.players && data.players.length >= 2) {
-            setGameStarted(true);
-          } else {
-            setGameStarted(false);
+      const unsub = onSnapshot(
+        doc(db, "multiplayerSessions", sessionId),
+        (docSnap) => {
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            setSessionData(data);
+            if (data.updateMsg) setUpdateMsg(data.updateMsg);
+            // Wait until at least 2 players have joined (host + opponent)
+            if (data.players && data.players.length >= 2) {
+              setGameStarted(true);
+            } else {
+              setGameStarted(false);
+            }
           }
         }
-      });
+      );
       return () => unsub();
     }
   }, [sessionId]);
@@ -118,7 +126,9 @@ export default function MarvelPuzzle() {
     const MAX_ATTEMPTS = 3;
     async function fetchSuperhero(attempt = 0) {
       try {
-        const res = await fetch(`https://www.superheroapi.com/api.php/${ACCESS_TOKEN}/search/a`);
+        const res = await fetch(
+          `https://www.superheroapi.com/api.php/${ACCESS_TOKEN}/search/a`
+        );
         const data = await res.json();
         if (data.response === "success" && data.results) {
           const filtered = data.results.filter(
@@ -134,14 +144,19 @@ export default function MarvelPuzzle() {
             if (attempt < MAX_ATTEMPTS) {
               fetchSuperhero(attempt + 1);
             } else {
-              setMessage("Error: No Marvel characters available. Please try again later.");
+              setMessage(
+                "Error: No Marvel characters available. Please try again later."
+              );
             }
             return;
           }
-          const randomHero = filtered[Math.floor(Math.random() * filtered.length)];
+          const randomHero =
+            filtered[Math.floor(Math.random() * filtered.length)];
           setSuperhero(randomHero);
         } else {
-          setMessage("Error: Unable to load superhero. Please try again later.");
+          setMessage(
+            "Error: Unable to load superhero. Please try again later."
+          );
         }
       } catch (error) {
         console.error("Error fetching superhero", error);
@@ -151,7 +166,18 @@ export default function MarvelPuzzle() {
     fetchSuperhero();
     // Reset timer for new round.
     setTimeLeft(TIME_LIMIT);
-  }, [round, mode]);
+  }, [round, mode, imgErrorCount]);
+
+  useEffect(() => {
+    if (!superhero?.image?.url) return;
+    const img = new Image();
+    img.src = superhero.image.url;
+    img.onerror = () => {
+      if (imgErrorCount < 3) {
+        setImgErrorCount((c) => c + 1);
+      }
+    };
+  }, [superhero]);
 
   useEffect(() => {
     if (!mode || !gridSize || !superhero) return;
@@ -327,7 +353,13 @@ export default function MarvelPuzzle() {
             Home
           </button>
         </Link>
-        <div style={{ textAlign: "center", width: "100%", color: "rgb(0, 144, 163)" }}>
+        <div
+          style={{
+            textAlign: "center",
+            width: "100%",
+            color: "rgb(0, 144, 163)",
+          }}
+        >
           <h1>Select Difficulty</h1>
           <div style={{ margin: "20px" }}>
             <button
@@ -588,7 +620,9 @@ export default function MarvelPuzzle() {
     return (
       <div style={containerStyle}>
         <div style={{ textAlign: "center", width: "100%" }}>
-          <h1 style={{ marginBottom: "20px" }}>Waiting for opponent to join...</h1>
+          <h1 style={{ marginBottom: "20px" }}>
+            Waiting for opponent to join...
+          </h1>
           <p>
             Your Friend Code is: <strong>{sessionId}</strong>
           </p>
@@ -642,7 +676,11 @@ export default function MarvelPuzzle() {
             color: "rgb(0,144,163)",
           }}
         >
-          Fragmentum - {mode ? mode.charAt(0).toUpperCase() + mode.slice(1) : "Select Difficulty"} Mode | Round {round} of {TOTAL_ROUNDS}
+          Fragmentum -{" "}
+          {mode
+            ? mode.charAt(0).toUpperCase() + mode.slice(1)
+            : "Select Difficulty"}{" "}
+          Mode | Round {round} of {TOTAL_ROUNDS}
         </h1>
         <p style={{ fontSize: "1.3rem", marginBottom: "1.5rem" }}>
           Time Left: {timeLeft} seconds | Score: {score}
@@ -677,7 +715,9 @@ export default function MarvelPuzzle() {
                     width: tileSize + "px",
                     height: tileSize + "px",
                     backgroundImage: `url(${superhero.image.url})`,
-                    backgroundSize: `${gridSize * tileSize}px ${gridSize * tileSize}px`,
+                    backgroundSize: `${gridSize * tileSize}px ${
+                      gridSize * tileSize
+                    }px`,
                     backgroundPosition: `${bgPosX} ${bgPosY}`,
                     border: piece.locked ? "2px solid green" : "1px solid #000",
                     boxSizing: "border-box",
@@ -688,8 +728,8 @@ export default function MarvelPuzzle() {
               );
             })}
           </div>
-          {(message === "Game Over! You completed all rounds." ||
-            message === "Time's up! Round over.") ? (
+          {message === "Game Over! You completed all rounds." ||
+          message === "Time's up! Round over." ? (
             <button
               onClick={handleRestart}
               style={{
@@ -740,66 +780,76 @@ export default function MarvelPuzzle() {
             )
           )}
           {message && (
-            <p style={{ fontSize: "1.2rem", marginTop: "10px", color: "rgb(0,144,163)" }}>
+            <p
+              style={{
+                fontSize: "1.2rem",
+                marginTop: "10px",
+                color: "rgb(0,144,163)",
+              }}
+            >
               {message}
             </p>
           )}
           {/* Final Leaderboard Panel */}
-          {message === "Game Over! You completed all rounds." && sessionData?.scores && (
-            <div
-              style={{
-                margin: "30px auto",
-                maxWidth: "500px",
-                background: "linear-gradient(135deg, rgb(59, 0, 0), rgba(49, 41, 41, 0.61))",
-                borderRadius: "10px",
-                padding: "20px",
-                boxShadow: "0 4px 10px rgba(0, 0, 0, 0.5)",
-              }}
-            >
-              <h3
+          {message === "Game Over! You completed all rounds." &&
+            sessionData?.scores && (
+              <div
                 style={{
-                  fontSize: "1.8rem",
-                  textAlign: "center",
-                  marginTop: "-10px",
-                  marginBottom: "25px",
-                  color: "rgb(0,144,163)",
+                  margin: "30px auto",
+                  maxWidth: "500px",
+                  background:
+                    "linear-gradient(135deg, rgb(59, 0, 0), rgba(49, 41, 41, 0.61))",
+                  borderRadius: "10px",
+                  padding: "20px",
+                  boxShadow: "0 4px 10px rgba(0, 0, 0, 0.5)",
                 }}
               >
-                Final Leaderboard
-              </h3>
-              <ol
-                style={{
-                  listStyleType: "none",
-                  fontSize: "1.2rem",
-                  color: "#fff",
-                  margin: "0 auto",
-                  padding: "0",
-                }}
-              >
-                {Object.entries(sessionData.scores)
-                  .sort((a, b) => Number(b[1]) - Number(a[1]))
-                  .map(([player, score]) => (
-                    <li
-                      key={player}
-                      style={{
-                        marginBottom: "10px",
-                        textAlign: "center",
-                        padding: "5px 0",
-                        borderBottom: "2px solid rgba(0, 0, 0, 0.75)",
-                      }}
-                    >
-                      <span style={{ fontWeight: "bold", color: "#ffcc00" }}>
-                        {player}
-                      </span>
-                      : {score}
-                    </li>
-                  ))}
-              </ol>
-            </div>
-          )}
+                <h3
+                  style={{
+                    fontSize: "1.8rem",
+                    textAlign: "center",
+                    marginTop: "-10px",
+                    marginBottom: "25px",
+                    color: "rgb(0,144,163)",
+                  }}
+                >
+                  Final Leaderboard
+                </h3>
+                <ol
+                  style={{
+                    listStyleType: "none",
+                    fontSize: "1.2rem",
+                    color: "#fff",
+                    margin: "0 auto",
+                    padding: "0",
+                  }}
+                >
+                  {Object.entries(sessionData.scores)
+                    .sort((a, b) => Number(b[1]) - Number(a[1]))
+                    .map(([player, score]) => (
+                      <li
+                        key={player}
+                        style={{
+                          marginBottom: "10px",
+                          textAlign: "center",
+                          padding: "5px 0",
+                          borderBottom: "2px solid rgba(0, 0, 0, 0.75)",
+                        }}
+                      >
+                        <span style={{ fontWeight: "bold", color: "#ffcc00" }}>
+                          {player}
+                        </span>
+                        : {score}
+                      </li>
+                    ))}
+                </ol>
+              </div>
+            )}
         </div>
       ) : (
-        <p style={{ textAlign: "center", width: "100%" }}>Loading superhero...</p>
+        <p style={{ textAlign: "center", width: "100%" }}>
+          Loading superhero...
+        </p>
       )}
     </div>
   );

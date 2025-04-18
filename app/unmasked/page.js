@@ -25,7 +25,7 @@ const getChampionClass = (name) => {
   return entry ? entry.class : "Unknown";
 };
 
-export default function MCUGuesser() {
+export default function Unmasked() {
   const [characters, setCharacters] = useState([]);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [currentGuess, setCurrentGuess] = useState("");
@@ -43,6 +43,7 @@ export default function MCUGuesser() {
   const [suggestions, setSuggestions] = useState([]);
   const [comparisons, setComparisons] = useState([]);
   const [finalAnswer, setFinalAnswer] = useState("");
+  const [imgErrorCount, setImgErrorCount] = useState(0);
 
   // State for rules popup
   const [showRules, setShowRules] = useState(false);
@@ -139,6 +140,25 @@ export default function MCUGuesser() {
     }
     fetchSuggestions();
   }, [currentGuess]);
+
+  useEffect(() => {
+    setImgErrorCount(0);
+  }, [selectedCharacter]);
+
+  // called if <Image> fails to load
+  const handleImageError = () => {
+    if (imgErrorCount < 3 && characters.length > 1) {
+      setImgErrorCount((c) => c + 1);
+      // pick a different random character
+      let other;
+      do {
+        other = characters[
+          Math.floor(Math.random() * characters.length)
+        ];
+      } while (other.name === selectedCharacter.name);
+      setSelectedCharacter(other);
+    }
+  };
 
   useEffect(() => {
     if (selectedCharacter) {
@@ -550,6 +570,7 @@ export default function MCUGuesser() {
                 layout="responsive"
                 width={500}
                 height={500}
+                onError={handleImageError}
                 objectFit="cover"
                 quality={75}
               />

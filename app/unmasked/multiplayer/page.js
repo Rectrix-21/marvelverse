@@ -35,7 +35,7 @@ const getChampionClass = (name) => {
   return entry ? entry.class : "Unknown";
 };
 
-export default function MCUGuesser() {
+export default function Unmasked() {
   // Multiplayer Session State
   const [sessionId, setSessionId] = useState("");
   const [friendCode, setFriendCode] = useState("");
@@ -68,6 +68,7 @@ export default function MCUGuesser() {
   const [finalAnswer, setFinalAnswer] = useState("");
   const [roundEnded, setRoundEnded] = useState(false);
   const [comparisons, setComparisons] = useState([]);
+  const [imgErrorCount, setImgErrorCount] = useState(0);
 
   const comparisonProperties = [
     { label: "Guess", custom: true, type: "text" },
@@ -203,6 +204,24 @@ export default function MCUGuesser() {
     }
     fetchSuggestions();
   }, [currentGuess]);
+
+  useEffect(() => {
+    setImgErrorCount(0);
+  }, [selectedCharacter]);
+
+  // On image load failure, pick a different random character (up to 3 retries)
+  const handleImageError = () => {
+    if (imgErrorCount < 3 && characters.length > 1) {
+      setImgErrorCount((c) => c + 1);
+      let other;
+      do {
+        other = characters[
+          Math.floor(Math.random() * characters.length)
+        ];
+      } while (other.name === selectedCharacter.name);
+      setSelectedCharacter(other);
+    }
+  };
 
   // When selectedCharacter changes, set its champion class and clues.
   useEffect(() => {
@@ -791,6 +810,7 @@ export default function MCUGuesser() {
                     height={500}
                     objectFit="cover"
                     quality={75}
+                    onError={handleImageError}
                   />
                 </div>
               ) : (
