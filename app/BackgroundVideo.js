@@ -22,6 +22,9 @@ export default function BackgroundVideo() {
         autoPlay
         loop
         muted
+        playsInline // ← allow inline play on iOS
+        webkit-playsinline="true" // ← legacy iOS
+        preload="auto"
         id="bgVideo"
         onLoadedData={handleVideoLoaded}
         style={{

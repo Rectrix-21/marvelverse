@@ -30,6 +30,7 @@ export default function Fragmentum() {
   const [timeLeft, setTimeLeft] = useState(TIME_LIMIT);
   const [score, setScore] = useState(0);
   const [imgErrorCount, setImgErrorCount] = useState(0);
+  const [dragIndex, setDragIndex] = useState(null);
 
   // Multiplayer Session States
   const [username, setUsername] = useState("");
@@ -93,6 +94,25 @@ export default function Fragmentum() {
     } catch (error) {
       console.error("Error joining session:", error);
     }
+  };
+
+  const handleTouchStart = (e, index) => {
+    e.preventDefault();
+    setDragIndex(index);
+  };
+  const handleTouchEnd = (e, dropIndex) => {
+    e.preventDefault();
+    if (dragIndex === null || pieces[dropIndex].locked) {
+      setDragIndex(null);
+      return;
+    }
+    const newPieces = [...pieces];
+    [newPieces[dragIndex], newPieces[dropIndex]] = [
+      newPieces[dropIndex],
+      newPieces[dragIndex],
+    ];
+    setPieces(newPieces);
+    setDragIndex(null);
   };
 
   // Realtime subscription for session updates.
@@ -711,18 +731,20 @@ export default function Fragmentum() {
                   onDragStart={(e) => handleDragStart(e, index)}
                   onDragOver={handleDragOver}
                   onDrop={(e) => handleDrop(e, index)}
+                  // 3) hook touch events
+                  onTouchStart={(e) => handleTouchStart(e, index)}
+                  onTouchEnd={(e) => handleTouchEnd(e, index)}
                   style={{
                     width: tileSize + "px",
                     height: tileSize + "px",
                     backgroundImage: `url(${superhero.image.url})`,
-                    backgroundSize: `${gridSize * tileSize}px ${
-                      gridSize * tileSize
-                    }px`,
+                    backgroundSize: `${gridSize * tileSize}px ${gridSize * tileSize}px`,
                     backgroundPosition: `${bgPosX} ${bgPosY}`,
                     border: piece.locked ? "2px solid green" : "1px solid #000",
                     boxSizing: "border-box",
                     cursor: piece.locked ? "default" : "move",
                     opacity: piece.locked ? 0.8 : 1,
+                    touchAction: "none",  // prevent page swipe while dragging
                   }}
                 ></div>
               );

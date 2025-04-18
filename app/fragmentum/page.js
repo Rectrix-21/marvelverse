@@ -18,9 +18,29 @@ export default function Fragmentum() {
   const [message, setMessage] = useState("");
   const [showRules, setShowRules] = useState(false);
   const [imgErrorCount, setImgErrorCount] = useState(0);
+  const [dragIndex, setDragIndex] = useState(null);
 
   const toggleRulesPopup = () => {
     setShowRules((prev) => !prev);
+  };
+
+  const handleTouchStart = (e, index) => {
+    e.preventDefault();
+    setDragIndex(index);
+  };
+  const handleTouchEnd = (e, dropIndex) => {
+    e.preventDefault();
+    if (dragIndex === null || pieces[dropIndex].locked) {
+      setDragIndex(null);
+      return;
+    }
+    const newPieces = [...pieces];
+    [newPieces[dragIndex], newPieces[dropIndex]] = [
+      newPieces[dropIndex],
+      newPieces[dragIndex],
+    ];
+    setPieces(newPieces);
+    setDragIndex(null);
   };
 
   // Fetch superhero – only if mode is selected.
@@ -231,6 +251,7 @@ export default function Fragmentum() {
               style={{
                 padding: "10px 20px",
                 marginRight: "10px",
+                marginBottom: "20px",
                 cursor: "pointer",
                 backgroundColor: "rgb(155,0,0)",
                 color: "#fff",
@@ -256,6 +277,7 @@ export default function Fragmentum() {
               style={{
                 padding: "10px 20px",
                 marginRight: "10px",
+                marginBottom: "20px",
                 cursor: "pointer",
                 backgroundColor: "rgb(155,0,0)",
                 color: "#fff",
@@ -383,6 +405,9 @@ export default function Fragmentum() {
                   onDragStart={(e) => handleDragStart(e, index)}
                   onDragOver={handleDragOver}
                   onDrop={(e) => handleDrop(e, index)}
+                  // 3) hook touch events
+                  onTouchStart={(e) => handleTouchStart(e, index)}
+                  onTouchEnd={(e) => handleTouchEnd(e, index)}
                   style={{
                     width: tileSize + "px",
                     height: tileSize + "px",
@@ -393,6 +418,7 @@ export default function Fragmentum() {
                     boxSizing: "border-box",
                     cursor: piece.locked ? "default" : "move",
                     opacity: piece.locked ? 0.8 : 1,
+                    touchAction: "none",  // prevent page swipe while dragging
                   }}
                 ></div>
               );
