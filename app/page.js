@@ -7,7 +7,7 @@ import styles from "./Marvelverse.module.css";
 import ProfileButton from "./ProfileButton";
 
 // Dynamically import the Marvel Guesser component if you wish to embed it
-const Quiz = dynamic(() => import("./mcu/page.js"), { ssr: false });
+const Quiz = dynamic(() => import("./unmasked/page.js"), { ssr: false });
 
 export default function Home() {
   return (
@@ -87,7 +87,7 @@ export default function Home() {
               Test your knowledge of Marvel characters.
             </p>
             <div style={{ display: "flex", gap: "20px" }}>
-              <Link href="/mcu" legacyBehavior>
+              <Link href="/unmasked" legacyBehavior>
                 <a
                   style={{
                     textDecoration: "none",
@@ -108,7 +108,7 @@ export default function Home() {
                   Single Player
                 </a>
               </Link>
-              <Link href="/mcu/multiplayer" legacyBehavior>
+              <Link href="/unmasked/multiplayer" legacyBehavior>
                 <a
                   style={{
                     textDecoration: "none",
@@ -158,7 +158,7 @@ export default function Home() {
               Assemble the puzzle pieces to form the character image.
             </p>
             <div style={{ display: "flex", gap: "20px" }}>
-              <Link href="/mpuzzle" legacyBehavior>
+              <Link href="/fragmentum" legacyBehavior>
                 <a
                   style={{
                     textDecoration: "none",
@@ -179,7 +179,7 @@ export default function Home() {
                   Single Player
                 </a>
               </Link>
-              <Link href="/mpuzzle/multiplayer" legacyBehavior>
+              <Link href="/fragmentum/multiplayer" legacyBehavior>
                 <a
                   style={{
                     textDecoration: "none",
@@ -218,7 +218,7 @@ export default function Home() {
           zIndex: 1000,
         }}
       >
-        <Link href="/footer/about" legacyBehavior>
+        <Link href="/about" legacyBehavior>
           <a
             style={{
               color: "rgb(0, 176, 199)",
@@ -232,7 +232,7 @@ export default function Home() {
           </a>
         </Link>
         <span style={{ margin: "0 15px", color: "#fff" }}>|</span>
-        <Link href="/footer/contact" legacyBehavior>
+        <Link href="/contact" legacyBehavior>
           <a
             style={{
               color: "rgb(0, 176, 199)",
@@ -246,7 +246,7 @@ export default function Home() {
           </a>
         </Link>
         <span style={{ margin: "0 15px", color: "#fff" }}>|</span>
-        <Link href="/footer/suggest" legacyBehavior>
+        <Link href="/suggest" legacyBehavior>
           <a
             style={{
               color: "rgb(0, 176, 199)",
