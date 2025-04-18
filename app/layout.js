@@ -9,8 +9,9 @@ const marvelFont = localFont({
 });
 
 export const metadata = {
-  title: "Marvelverse",
+  title: "Marvelversed",
   description: "I love you 3000 <3",
+  viewport: "width=device-width, initial-scale=1",
   icons: {
     icon: "/deadpool-logo.svg",
   },

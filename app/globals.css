@@ -58,3 +58,30 @@ body {
   padding: 0;
   overflow-x: hidden;
 }
+
+@media (max-width: 600px) {
+  body {
+    padding: 0 10px;
+    font-size: 0.9rem;
+  }
+  /* if you moved your footer into CSS rather than inline, for example: */
+  footer {
+    position: relative !important;
+    padding: 10px !important;
+    font-size: 0.75rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  table, th, td {
+    display: block;
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+  th {
+    width: auto !important;
+  }
+  .page-transition {
+    padding: 0 !important;
+  }
+}
