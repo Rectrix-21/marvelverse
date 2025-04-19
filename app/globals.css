@@ -112,3 +112,13 @@ body {
     margin: 0 auto; /* Center the table */
   }
 }
+
+.cookie-banner {
+  display: none;
+  transition: all 0.3s ease;
+}
+
+.cookie-banner.show {
+  display: flex !important;
+}
+

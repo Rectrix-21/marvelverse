@@ -26,17 +26,82 @@ export default function RootLayout({ children }) {
         style={{ position: "relative", overflow: "auto" }}
       >
         <BackgroundVideo />
-        <PageTransition>
-          {children}
-        </PageTransition>
-        <Script
-  src="https://cmp.osano.com/m6mxkqK94I/4e2f2393-90b0-4fa0-a813-d42e1502c057/osano.js"
-  strategy="afterInteractive"
-/>
+        <PageTransition>{children}</PageTransition>
+        <div
+          id="cookie-banner"
+          className="cookie-banner"
+          style={{
+            display: "none",
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            color: "#fff",
+            padding: "15px",
+            alignItems: "center",
+            justifyContent: "space-between",
+            zIndex: 1001,
+            flexDirection: "row",
+          }}
+        >
+          <p style={{ margin: 0, padding: "5px 10px" }}>
+            We use cookies to improve your experience. By using this site, you
+            agree to our cookie policy.
+          </p>
+          <div
+            className="cookie-actions"
+            style={{ display: "flex", gap: "10px" }}
+          >
+            <button
+              id="accept-cookies"
+              style={{ padding: "5px 10px", cursor: "pointer" }}
+            >
+              Accept
+            </button>
+            <button
+              id="reject-cookies"
+              style={{ padding: "5px 10px", cursor: "pointer" }}
+            >
+              Reject
+            </button>
+          </div>
+        </div>
+        <Script>
+          {`
+          document.addEventListener("DOMContentLoaded", () => {
+            const banner = document.getElementById("cookie-banner");
+            const acceptBtn = document.getElementById("accept-cookies");
+            const rejectBtn = document.getElementById("reject-cookies");
+            const manageLink = document.getElementById("manage-cookies");
 
+            const showBanner = () => {
+              if (banner) banner.classList.add("show");
+            };
+            const hideBanner = () => {
+              if (banner) banner.classList.add("show");
+            };
+            const setConsent = (value) => {
+              localStorage.setItem("cookieConsent", value);
+              hideBanner();
+            };
+
+            if (!localStorage.getItem("cookieConsent")) {
+              showBanner();
+            }
+
+            if (acceptBtn) acceptBtn.onclick = () => setConsent("accepted");
+            if (rejectBtn) rejectBtn.onclick = () => setConsent("rejected");
+            if (manageLink) {
+              manageLink.onclick = (e) => {
+                e.preventDefault();
+                showBanner();
+              };
+            }
+          });
+        `}
+        </Script>
       </body>
     </html>
   );
 }
-
-

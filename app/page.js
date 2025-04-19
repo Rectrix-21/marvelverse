@@ -3,10 +3,9 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import styles from "./Marvelverse.module.css";
 import ProfileButton from "./ProfileButton";
 
-// Dynamically import the Marvel Guesser component if you wish to embed it
+// Dynamically import the Quiz component if needed
 const Quiz = dynamic(() => import("./unmasked/page.js"), { ssr: false });
 
 export default function Home() {
@@ -15,7 +14,7 @@ export default function Home() {
       <Head>
         <meta name="color-scheme" content="light" />
       </Head>
-      {/* The global background video is now rendered via layout */}
+      {/* The global background video is rendered via layout */}
       <ProfileButton />
       <div
         style={{
@@ -42,7 +41,7 @@ export default function Home() {
                 top: "200px",
                 left: "50%",
                 transform: "translateX(-50%)",
-                width: "700px", // adjust display size as needed
+                width: "700px",
                 maxWidth: "100%",
                 height: "auto",
               }}
@@ -67,7 +66,6 @@ export default function Home() {
         >
           Choose a Game Mode:
         </h2>
-        {/* Wrap the game mode cards in a flex row container */}
         <div
           style={{
             display: "flex",
@@ -77,6 +75,7 @@ export default function Home() {
             flexWrap: "wrap",
           }}
         >
+          {/* Unmasked option */}
           <div
             style={{
               display: "flex",
@@ -148,6 +147,7 @@ export default function Home() {
               </Link>
             </div>
           </div>
+          {/* Fragmentum option */}
           <div
             style={{
               display: "flex",
@@ -220,7 +220,8 @@ export default function Home() {
             </div>
           </div>
         </div>
-        {/* Optionally embed the Quiz component: <Quiz /> */}
+        {/* Optionally embed the Quiz component */}
+        {/* <Quiz /> */}
       </div>
       <footer
         style={{
@@ -311,7 +312,7 @@ export default function Home() {
           </a>
         </Link>
         <span style={{ margin: "0 15px", color: "#fff" }}>|</span>
-        {/* New Manage Cookies link - triggers the Osano cookie consent modal */}
+        {/* New Manage Cookies link triggers the custom banner */}
         <a
           href="#"
           style={{
@@ -319,17 +320,7 @@ export default function Home() {
             textDecoration: "none",
             fontSize: "0.85rem",
           }}
-          onClick={(e) => {
-            e.preventDefault();
-            const tryShow = () => {
-              if (window.osano?.cm?.show) {
-                window.osano.cm.show();
-              } else {
-                setTimeout(tryShow, 300);
-              }
-            };
-            tryShow();
-          }}
+          id="manage-cookies"
           onMouseOver={(e) =>
             (e.currentTarget.style.textDecoration = "underline")
           }
