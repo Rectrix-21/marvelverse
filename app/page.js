@@ -29,10 +29,26 @@ export default function Home() {
           color: "#fff",
           boxSizing: "border-box",
           overflowY: "auto",
-          overflowX: "hidden" 
+          overflowX: "hidden",
         }}
       >
-        <h1 className={styles.header}>Marvelversed</h1>
+        <Link href="/" legacyBehavior>
+          <a>
+            <img
+              src="/logo-title.svg"
+              alt="Marvelversed Logo"
+              style={{
+                position: "absolute",
+                top: "200px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                width: "700px", // adjust display size as needed
+                maxWidth: "100%",
+                height: "auto",
+              }}
+            />
+          </a>
+        </Link>
         <h1
           style={{
             fontSize: "3rem",
@@ -230,8 +246,12 @@ export default function Home() {
               textDecoration: "none",
               fontSize: "0.85rem",
             }}
-            onMouseOver={e => (e.currentTarget.style.textDecoration = "underline")}
-            onMouseOut={e => (e.currentTarget.style.textDecoration = "none")}
+            onMouseOver={(e) =>
+              (e.currentTarget.style.textDecoration = "underline")
+            }
+            onMouseOut={(e) =>
+              (e.currentTarget.style.textDecoration = "none")
+            }
           >
             About
           </a>
@@ -244,8 +264,12 @@ export default function Home() {
               textDecoration: "none",
               fontSize: "0.85rem",
             }}
-            onMouseOver={e => (e.currentTarget.style.textDecoration = "underline")}
-            onMouseOut={e => (e.currentTarget.style.textDecoration = "none")}
+            onMouseOver={(e) =>
+              (e.currentTarget.style.textDecoration = "underline")
+            }
+            onMouseOut={(e) =>
+              (e.currentTarget.style.textDecoration = "none")
+            }
           >
             Contact
           </a>
@@ -258,12 +282,63 @@ export default function Home() {
               textDecoration: "none",
               fontSize: "0.85rem",
             }}
-            onMouseOver={e => (e.currentTarget.style.textDecoration = "underline")}
-            onMouseOut={e => (e.currentTarget.style.textDecoration = "none")}
+            onMouseOver={(e) =>
+              (e.currentTarget.style.textDecoration = "underline")
+            }
+            onMouseOut={(e) =>
+              (e.currentTarget.style.textDecoration = "none")
+            }
           >
             Suggest a Game
           </a>
         </Link>
+        <span style={{ margin: "0 15px", color: "#fff" }}>|</span>
+        <Link href="/privacy-policy" legacyBehavior>
+          <a
+            style={{
+              color: "rgb(0, 176, 199)",
+              textDecoration: "none",
+              fontSize: "0.85rem",
+            }}
+            onMouseOver={(e) =>
+              (e.currentTarget.style.textDecoration = "underline")
+            }
+            onMouseOut={(e) =>
+              (e.currentTarget.style.textDecoration = "none")
+            }
+          >
+            Privacy Policy
+          </a>
+        </Link>
+        <span style={{ margin: "0 15px", color: "#fff" }}>|</span>
+        {/* New Manage Cookies link - triggers the Osano cookie consent modal */}
+        <a
+          href="#"
+          style={{
+            color: "rgb(0, 176, 199)",
+            textDecoration: "none",
+            fontSize: "0.85rem",
+          }}
+          onClick={(e) => {
+            e.preventDefault();
+            const tryShow = () => {
+              if (window.osano?.cm?.show) {
+                window.osano.cm.show();
+              } else {
+                setTimeout(tryShow, 300);
+              }
+            };
+            tryShow();
+          }}
+          onMouseOver={(e) =>
+            (e.currentTarget.style.textDecoration = "underline")
+          }
+          onMouseOut={(e) =>
+            (e.currentTarget.style.textDecoration = "none")
+          }
+        >
+          Manage Cookies
+        </a>
       </footer>
     </>
   );
