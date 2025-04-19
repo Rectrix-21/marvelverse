@@ -67,7 +67,7 @@ export default function RootLayout({ children }) {
             </button>
           </div>
         </div>
-        <Script>
+        <Script id="cookie-script">
           {`
           document.addEventListener("DOMContentLoaded", () => {
             const banner = document.getElementById("cookie-banner");
@@ -79,7 +79,7 @@ export default function RootLayout({ children }) {
               if (banner) banner.classList.add("show");
             };
             const hideBanner = () => {
-              if (banner) banner.classList.add("show");
+              if (banner) banner.classList.remove("show");
             };
             const setConsent = (value) => {
               localStorage.setItem("cookieConsent", value);
