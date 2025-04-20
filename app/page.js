@@ -9,7 +9,7 @@ import ProfileButton from "./ProfileButton";
 // Dynamically import the Quiz component if needed
 const Quiz = dynamic(() => import("./unmasked/page.js"), { ssr: false });
 
-// Custom iOS-style toggle switch component using styled-jsx
+// toggle switch component using styled-jsx
 function ToggleSwitch({ checked, onChange, disabled }) {
   return (
     <label className="toggle-switch">

@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function PrivacyPolicy() {
   useEffect(() => {
-    // Ensure we start at the top on load
+    // Start at the top on load
     window.scrollTo(0, 0);
     // If a hash exists, scroll to that element using smooth animation
     if (window.location.hash) {

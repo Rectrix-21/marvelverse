@@ -2,9 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-// removed Firestore imports
-// import { db } from "../../../../firebase/firebase";
-// import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 export default function Suggest() {
   const [gameName, setGameName]     = useState("");

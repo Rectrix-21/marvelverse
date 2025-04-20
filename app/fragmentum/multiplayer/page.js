@@ -49,9 +49,8 @@ export default function Fragmentum() {
 
   const timerRef = useRef(null);
 
-  // -------------------------------
+
   // Session Creation Functions
-  // -------------------------------
   const generateFriendCode = async () => {
     if (!username.trim()) {
       alert("Please enter a username before generating a friend code.");
@@ -192,9 +191,8 @@ export default function Fragmentum() {
     }
   }, [sessionId]);
 
-  // -------------------------------
+  
   // Puzzle Setup & Timer Logic
-  // -------------------------------
   useEffect(() => {
     if (!mode) return;
     const MAX_ATTEMPTS = 3;
