@@ -170,6 +170,7 @@ export default function Home() {
         <Link href="/" legacyBehavior>
           <a>
             <img
+              className="logo"
               src="/logo-title.svg"
               alt="Marvelversed Logo"
               style={{
@@ -185,6 +186,7 @@ export default function Home() {
           </a>
         </Link>
         <h1
+          className="title"
           style={{
             fontSize: "3rem",
             marginBottom: "20px",
@@ -241,6 +243,7 @@ export default function Home() {
             <div style={{ display: "flex", gap: "20px" }}>
               <Link href="/unmasked" legacyBehavior>
                 <a
+                  className="mode-button"
                   style={{
                     textDecoration: "none",
                     padding: "15px 20px",
@@ -262,6 +265,7 @@ export default function Home() {
               </Link>
               <Link href="/unmasked/multiplayer" legacyBehavior>
                 <a
+                  className="mode-button"
                   style={{
                     textDecoration: "none",
                     padding: "15px 20px",
@@ -313,6 +317,7 @@ export default function Home() {
             <div style={{ display: "flex", gap: "20px" }}>
               <Link href="/fragmentum" legacyBehavior>
                 <a
+                  className="mode-button"
                   style={{
                     textDecoration: "none",
                     padding: "15px 20px",
@@ -334,6 +339,7 @@ export default function Home() {
               </Link>
               <Link href="/fragmentum/multiplayer" legacyBehavior>
                 <a
+                  className="mode-button"
                   style={{
                     textDecoration: "none",
                     padding: "15px 20px",

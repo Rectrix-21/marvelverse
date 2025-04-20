@@ -73,6 +73,7 @@ export default function Fragmentum() {
 
   const handleTouchStart = (e, index) => {
     e.preventDefault();
+    if (pieces[index].locked) return;
     setDragIndex(index);
   };
   const handleTouchEnd = (e) => {
@@ -291,6 +292,7 @@ export default function Fragmentum() {
           </button>
         </Link>
         <div
+          className="difficulty-banner"
           style={{
             width: "100%",
             textAlign: "center",

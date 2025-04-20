@@ -148,6 +148,7 @@ export default function Fragmentum() {
 
   const handleTouchStart = (e, index) => {
     e.preventDefault();
+    if (pieces[index].locked) return;
     setDragIndex(index);
   };
   const handleTouchEnd = (e) => {

@@ -92,7 +92,38 @@ body {
     padding: 10px 0px !important;
     font-size: 0.75rem !important;
   }
+  footer a {
+    font-size: 0.5rem !important;
+  }
+  .logo {
+    position: relative !important;
+    max-width: 100%;
+    height: auto;
+    scale: 1;
+    margin-top: -80px;
+    padding-bottom: 100px;
+  }
+  .title {
+    font-size: 2rem !important;
+    padding-top: 150px;
+  }
+  h1 {
+    font-size: 2rem !important;
+  }
+  h2 {
+    font-size: 1.5rem !important;
+    margin-bottom: 50px !important;
+  }
+  h3 {
+    font-size: 1.25rem !important;
+    margin-bottom: 20px !important;
+  }
 
+  .mode-button {
+    font-size: 0.85rem !important;
+    padding: 10px 12px !important;
+  }
+  
   .multiplayer-wrapper {
     display: flex !important;
     flex-direction: column !important;
@@ -111,14 +142,20 @@ body {
     border-collapse: collapse;
     margin: 0 auto; /* Center the table */
   }
+  .difficulty-banner {
+    /* Reduce overall padding/margin */
+    padding: 0px !important;
+    margin: 0 10px !important;
+  }
+  .difficulty-banner h1 {
+    font-size: 1.5rem !important;
+    padding-top: 0px !important;
+  }
+  .difficulty-banner button {
+    padding: 8px 15px !important;
+    font-size: 0.85rem !important;
+  }
 }
 
-.cookie-banner {
-  display: none;
-  transition: all 0.3s ease;
-}
 
-.cookie-banner.show {
-  display: flex !important;
-}
 
