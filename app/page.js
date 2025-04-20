@@ -79,7 +79,7 @@ export default function Home() {
   const [cookieBannerMode, setCookieBannerMode] = useState("consent"); // "consent" or "details"
   const [cookiePrefs, setCookiePrefs] = useState({
     necessary: true,
-    cookiesPolicy: false,
+    cookiesPolicy: true,
     functionality: false,
     analysis: false,
   });
@@ -121,7 +121,7 @@ export default function Home() {
     // Keep necessary true and disable all others
     const prefs = {
       necessary: true,
-      cookiesPolicy: false,
+      cookiesPolicy: true,
       functionality: false,
       analysis: false,
     };
@@ -386,9 +386,7 @@ export default function Home() {
             onMouseOver={(e) =>
               (e.currentTarget.style.textDecoration = "underline")
             }
-            onMouseOut={(e) =>
-              (e.currentTarget.style.textDecoration = "none")
-            }
+            onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}
           >
             About
           </a>
@@ -404,9 +402,7 @@ export default function Home() {
             onMouseOver={(e) =>
               (e.currentTarget.style.textDecoration = "underline")
             }
-            onMouseOut={(e) =>
-              (e.currentTarget.style.textDecoration = "none")
-            }
+            onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}
           >
             Contact
           </a>
@@ -422,9 +418,7 @@ export default function Home() {
             onMouseOver={(e) =>
               (e.currentTarget.style.textDecoration = "underline")
             }
-            onMouseOut={(e) =>
-              (e.currentTarget.style.textDecoration = "none")
-            }
+            onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}
           >
             Suggest a Game
           </a>
@@ -440,9 +434,7 @@ export default function Home() {
             onMouseOver={(e) =>
               (e.currentTarget.style.textDecoration = "underline")
             }
-            onMouseOut={(e) =>
-              (e.currentTarget.style.textDecoration = "none")
-            }
+            onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}
           >
             Privacy Policy
           </a>
@@ -458,9 +450,7 @@ export default function Home() {
           onMouseOver={(e) =>
             (e.currentTarget.style.textDecoration = "underline")
           }
-          onMouseOut={(e) =>
-            (e.currentTarget.style.textDecoration = "none")
-          }
+          onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}
           onClick={(e) => {
             e.preventDefault();
             setCookieBannerMode("consent");
