@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import Head from "next/head";
@@ -84,6 +84,18 @@ export default function Home() {
     analysis: false,
   });
 
+  // On first load, check for existing cookie preferences
+  useEffect(() => {
+    const storedPrefs = localStorage.getItem("cookiePrefs");
+    if (storedPrefs) {
+      setCookiePrefs(JSON.parse(storedPrefs));
+    } else {
+      // No prefs stored; show the cookie banner
+      setShowCookieBanner(true);
+      setCookieBannerMode("consent");
+    }
+  }, []);
+
   const handleToggle = (key) => {
     setCookiePrefs((prev) => ({ ...prev, [key]: !prev[key] }));
   };
@@ -107,25 +119,18 @@ export default function Home() {
 
   const handleDeclineAll = () => {
     // Keep necessary true and disable all others
-    setCookiePrefs({
+    const prefs = {
       necessary: true,
       cookiesPolicy: false,
       functionality: false,
       analysis: false,
-    });
-    localStorage.setItem(
-      "cookiePrefs",
-      JSON.stringify({
-        necessary: true,
-        cookiesPolicy: false,
-        functionality: false,
-        analysis: false,
-      })
-    );
+    };
+    setCookiePrefs(prefs);
+    localStorage.setItem("cookiePrefs", JSON.stringify(prefs));
     setShowCookieBanner(false);
   };
 
-  // Added missing function to close detailed banner view
+  // Function to close detailed view
   const handleCloseDetails = () => {
     setShowCookieBanner(false);
   };
@@ -381,7 +386,9 @@ export default function Home() {
             onMouseOver={(e) =>
               (e.currentTarget.style.textDecoration = "underline")
             }
-            onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}
+            onMouseOut={(e) =>
+              (e.currentTarget.style.textDecoration = "none")
+            }
           >
             About
           </a>
@@ -397,7 +404,9 @@ export default function Home() {
             onMouseOver={(e) =>
               (e.currentTarget.style.textDecoration = "underline")
             }
-            onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}
+            onMouseOut={(e) =>
+              (e.currentTarget.style.textDecoration = "none")
+            }
           >
             Contact
           </a>
@@ -413,7 +422,9 @@ export default function Home() {
             onMouseOver={(e) =>
               (e.currentTarget.style.textDecoration = "underline")
             }
-            onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}
+            onMouseOut={(e) =>
+              (e.currentTarget.style.textDecoration = "none")
+            }
           >
             Suggest a Game
           </a>
@@ -429,7 +440,9 @@ export default function Home() {
             onMouseOver={(e) =>
               (e.currentTarget.style.textDecoration = "underline")
             }
-            onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}
+            onMouseOut={(e) =>
+              (e.currentTarget.style.textDecoration = "none")
+            }
           >
             Privacy Policy
           </a>
@@ -445,7 +458,9 @@ export default function Home() {
           onMouseOver={(e) =>
             (e.currentTarget.style.textDecoration = "underline")
           }
-          onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}
+          onMouseOut={(e) =>
+            (e.currentTarget.style.textDecoration = "none")
+          }
           onClick={(e) => {
             e.preventDefault();
             setCookieBannerMode("consent");
