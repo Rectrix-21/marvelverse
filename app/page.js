@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import Head from "next/head";
@@ -8,13 +9,143 @@ import ProfileButton from "./ProfileButton";
 // Dynamically import the Quiz component if needed
 const Quiz = dynamic(() => import("./unmasked/page.js"), { ssr: false });
 
+// Custom iOS-style toggle switch component using styled-jsx
+function ToggleSwitch({ checked, onChange, disabled }) {
+  return (
+    <label className="toggle-switch">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={onChange}
+        disabled={disabled}
+      />
+      <span className="slider"></span>
+      <style jsx>{`
+        .toggle-switch {
+          position: relative;
+          display: inline-block;
+          width: 40px;
+          height: 24px;
+          margin-right: 8px;
+        }
+        .toggle-switch input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 5px;
+          left: 0;
+          right: 0;
+          bottom: 5px;
+          background-color: #ccc;
+          transition: 0.4s;
+          border-radius: 24px;
+        }
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 20px;
+          width: 20px;
+          left: -2px;
+          bottom: -3px;
+          background-color: white;
+          transition: 0.4s;
+          border-radius: 50%;
+        }
+        input:checked + .slider {
+          background-color: rgb(0, 176, 199);
+        }
+        input:focus + .slider {
+          box-shadow: 0 0 1px rgb(0, 176, 199);
+        }
+        input:checked + .slider:before {
+          transform: translateX(25px);
+        }
+        input:disabled + .slider {
+          background-color: rgb(0, 176, 199);
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      `}</style>
+    </label>
+  );
+}
+
 export default function Home() {
+  const [showCookieBanner, setShowCookieBanner] = useState(false);
+  const [cookieBannerMode, setCookieBannerMode] = useState("consent"); // "consent" or "details"
+  const [cookiePrefs, setCookiePrefs] = useState({
+    necessary: true,
+    cookiesPolicy: false,
+    functionality: false,
+    analysis: false,
+  });
+
+  const handleToggle = (key) => {
+    setCookiePrefs((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const handleSavePreferences = () => {
+    localStorage.setItem("cookiePrefs", JSON.stringify(cookiePrefs));
+    setShowCookieBanner(false);
+  };
+
+  const handleAcceptAll = () => {
+    const allAccepted = {
+      necessary: true,
+      cookiesPolicy: true,
+      functionality: true,
+      analysis: true,
+    };
+    setCookiePrefs(allAccepted);
+    localStorage.setItem("cookiePrefs", JSON.stringify(allAccepted));
+    setShowCookieBanner(false);
+  };
+
+  const handleDeclineAll = () => {
+    // Keep necessary true and disable all others
+    setCookiePrefs({
+      necessary: true,
+      cookiesPolicy: false,
+      functionality: false,
+      analysis: false,
+    });
+    localStorage.setItem(
+      "cookiePrefs",
+      JSON.stringify({
+        necessary: true,
+        cookiesPolicy: false,
+        functionality: false,
+        analysis: false,
+      })
+    );
+    setShowCookieBanner(false);
+  };
+
+  // Added missing function to close detailed banner view
+  const handleCloseDetails = () => {
+    setShowCookieBanner(false);
+  };
+
+  const buttonStyle = {
+    padding: "5px 8px",
+    cursor: "pointer",
+    fontSize: "0.8rem",
+    backgroundColor: "rgb(155, 0, 0)",
+    color: "#fff",
+    border: "none",
+    borderRadius: "4px",
+    transition: "background-color 0.3s",
+  };
+
   return (
     <>
       <Head>
         <meta name="color-scheme" content="light" />
       </Head>
-      {/* The global background video is rendered via layout */}
       <ProfileButton />
       <div
         style={{
@@ -250,9 +381,7 @@ export default function Home() {
             onMouseOver={(e) =>
               (e.currentTarget.style.textDecoration = "underline")
             }
-            onMouseOut={(e) =>
-              (e.currentTarget.style.textDecoration = "none")
-            }
+            onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}
           >
             About
           </a>
@@ -268,9 +397,7 @@ export default function Home() {
             onMouseOver={(e) =>
               (e.currentTarget.style.textDecoration = "underline")
             }
-            onMouseOut={(e) =>
-              (e.currentTarget.style.textDecoration = "none")
-            }
+            onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}
           >
             Contact
           </a>
@@ -286,9 +413,7 @@ export default function Home() {
             onMouseOver={(e) =>
               (e.currentTarget.style.textDecoration = "underline")
             }
-            onMouseOut={(e) =>
-              (e.currentTarget.style.textDecoration = "none")
-            }
+            onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}
           >
             Suggest a Game
           </a>
@@ -304,15 +429,12 @@ export default function Home() {
             onMouseOver={(e) =>
               (e.currentTarget.style.textDecoration = "underline")
             }
-            onMouseOut={(e) =>
-              (e.currentTarget.style.textDecoration = "none")
-            }
+            onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}
           >
             Privacy Policy
           </a>
         </Link>
         <span style={{ margin: "0 15px", color: "#fff" }}>|</span>
-        {/* New Manage Cookies link triggers the custom banner */}
         <a
           href="#"
           style={{
@@ -320,17 +442,251 @@ export default function Home() {
             textDecoration: "none",
             fontSize: "0.85rem",
           }}
-          id="manage-cookies"
           onMouseOver={(e) =>
             (e.currentTarget.style.textDecoration = "underline")
           }
-          onMouseOut={(e) =>
-            (e.currentTarget.style.textDecoration = "none")
-          }
+          onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}
+          onClick={(e) => {
+            e.preventDefault();
+            setCookieBannerMode("consent");
+            setShowCookieBanner(true);
+          }}
         >
           Manage Cookies
         </a>
       </footer>
+      {showCookieBanner &&
+        (cookieBannerMode === "consent" ? (
+          <div
+            style={{
+              position: "fixed",
+              bottom: "50px",
+              right: "20px",
+              backgroundColor: "rgba(0,0,0,0.85)",
+              color: "#fff",
+              padding: "15px",
+              borderRadius: "8px",
+              zIndex: 1100,
+              width: "320px",
+            }}
+          >
+            <p
+              style={{
+                fontSize: "0.9rem",
+                marginBottom: "20px",
+                marginTop: "5px",
+              }}
+            >
+              We use cookies to ensure the smooth operation of our website and
+              to gather statistical insights.
+            </p>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "10px",
+              }}
+            >
+              <button
+                onClick={() => setCookieBannerMode("details")}
+                style={buttonStyle}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.backgroundColor = "rgb(100, 0, 0)")
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.backgroundColor = "rgb(155, 0, 0)")
+                }
+              >
+                Manage
+              </button>
+              <button
+                onClick={handleDeclineAll}
+                style={buttonStyle}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.backgroundColor = "rgb(100, 0, 0)")
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.backgroundColor = "rgb(155, 0, 0)")
+                }
+              >
+                Decline All
+              </button>
+              <button
+                onClick={handleAcceptAll}
+                style={buttonStyle}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.backgroundColor = "rgb(100, 0, 0)")
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.backgroundColor = "rgb(155, 0, 0)")
+                }
+              >
+                Accept All
+              </button>
+            </div>
+          </div>
+        ) : (
+          // Detailed banner view (existing toggles view)
+          <div
+            style={{
+              position: "fixed",
+              bottom: "50px",
+              right: "20px",
+              backgroundColor: "rgba(0,0,0,0.85)",
+              color: "#fff",
+              padding: "20px",
+              borderRadius: "8px",
+              zIndex: 1100,
+              width: "320px",
+            }}
+          >
+            {/* Detailed banner content with toggles */}
+            <p
+              style={{
+                fontSize: "0.9rem",
+                marginBottom: "20px",
+                marginTop: "5px",
+              }}
+            >
+              Customize your cookie preferences:
+            </p>
+            <div style={{ marginBottom: "20px", fontSize: "0.85rem" }}>
+              <div style={{ marginBottom: "10px" }}>
+                <strong>Necessary / Essential Cookies</strong>
+                <p style={{ margin: "3px 0" }}>
+                  These cookies are essential for the operation of the website:
+                  they keep you logged in and keep your current game session
+                  active.
+                </p>
+                <ToggleSwitch
+                  checked={cookiePrefs.necessary}
+                  onChange={() => handleToggle("necessary")}
+                  disabled
+                />
+                <span
+                  style={{
+                    display: "inline-block",
+                    verticalAlign: "middle",
+                    marginTop: "4px",
+                  }}
+                >
+                  {cookiePrefs.necessary ? "On" : "Off"}
+                </span>
+              </div>
+              <div style={{ marginBottom: "10px" }}>
+                <strong>Cookies Policy / Notice Acceptance Cookies</strong>
+                <p style={{ margin: "3px 0" }}>
+                  These cookies track your acceptance of our cookies policy.
+                </p>
+                <ToggleSwitch
+                  checked={cookiePrefs.cookiesPolicy}
+                  onChange={() => handleToggle("cookiesPolicy")}
+                  disabled
+                />
+                <span
+                  style={{
+                    display: "inline-block",
+                    verticalAlign: "middle",
+                    marginTop: "4px",
+                  }}
+                >
+                  {cookiePrefs.cookiesPolicy ? "On" : "Off"}
+                </span>
+              </div>
+              <div style={{ marginBottom: "10px" }}>
+                <strong>Functionality Cookies</strong>
+                <p style={{ margin: "3px 0" }}>
+                  These cookies enhance the functionality of the website and
+                  pre-save some pages to load them faster.
+                </p>
+                <ToggleSwitch
+                  checked={cookiePrefs.functionality}
+                  onChange={() => handleToggle("functionality")}
+                />
+                <span
+                  style={{
+                    display: "inline-block",
+                    verticalAlign: "middle",
+                    marginTop: "4px",
+                  }}
+                >
+                  {cookiePrefs.functionality ? "On" : "Off"}
+                </span>
+              </div>
+              <div style={{ marginBottom: "10px" }}>
+                <strong>Analysis Cookies</strong>
+                <p style={{ margin: "3px 0" }}>
+                  These cookies collect statistical data using Google Analytics
+                  to help us improve user experience.
+                </p>
+                <ToggleSwitch
+                  checked={cookiePrefs.analysis}
+                  onChange={() => handleToggle("analysis")}
+                />
+                <span
+                  style={{
+                    display: "inline-block",
+                    verticalAlign: "middle",
+                    marginTop: "4px",
+                  }}
+                >
+                  {cookiePrefs.analysis ? "On" : "Off"}
+                </span>
+              </div>
+              <p style={{ fontSize: "0.8rem", marginTop: "5px" }}>
+                Read more about cookies on our{" "}
+                <Link href="/privacy-policy#tracking-cookies" legacyBehavior>
+                  <a style={{ color: "rgb(0, 176, 199)" }}>Privacy Policy</a>
+                </Link>
+                .
+              </p>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "10px",
+              }}
+            >
+              <button
+                onClick={handleCloseDetails}
+                style={buttonStyle}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.backgroundColor = "rgb(100, 0, 0)")
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.backgroundColor = "rgb(155, 0, 0)")
+                }
+              >
+                Close Details
+              </button>
+              <button
+                onClick={handleSavePreferences}
+                style={buttonStyle}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.backgroundColor = "rgb(100, 0, 0)")
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.backgroundColor = "rgb(155, 0, 0)")
+                }
+              >
+                Save Preferences
+              </button>
+              <button
+                onClick={handleAcceptAll}
+                style={buttonStyle}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.backgroundColor = "rgb(100, 0, 0)")
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.backgroundColor = "rgb(155, 0, 0)")
+                }
+              >
+                Accept All
+              </button>
+            </div>
+          </div>
+        ))}
     </>
   );
 }

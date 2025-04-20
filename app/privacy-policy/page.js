@@ -1,8 +1,25 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 
 export default function PrivacyPolicy() {
+  useEffect(() => {
+    // Ensure we start at the top on load
+    window.scrollTo(0, 0);
+    // If a hash exists, scroll to that element using smooth animation
+    if (window.location.hash) {
+      const id = window.location.hash.slice(1);
+      const target = document.getElementById(id);
+      if (target) {
+        // Delay to allow any layout/shim if needed
+        setTimeout(() => {
+          target.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      }
+    }
+  }, []);
+
   const buttonStyle = {
     position: "fixed",
     top: "10px",
@@ -102,7 +119,7 @@ export default function PrivacyPolicy() {
         </li>
         <li>
           <p>
-            <strong>Country</strong> refers to: Alberta, Canada
+            <strong>Country</strong> refers to: Canada
           </p>
         </li>
         <li>
@@ -212,7 +229,7 @@ export default function PrivacyPolicy() {
       <p>
         You may also have the option of sharing additional information with the Company through Your Third-Party Social Media Service&apos;s account. If You choose to provide such information and Personal Data, during registration or otherwise, You are giving the Company permission to use, share, and store it in accordance with this Privacy Policy.
       </p>
-      <h4>Tracking Technologies and Cookies</h4>
+      <h4 id="tracking-cookies">Tracking Technologies and Cookies</h4>
       <p>
         We use Cookies and similar tracking technologies to track the activity
         on Our Service and store certain information. Tracking technologies used
