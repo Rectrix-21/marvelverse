@@ -16,6 +16,7 @@ export default function ProfileButton() {
   const [editing, setEditing] = useState(false);
   const [newName, setNewName] = useState("");
   const [newPhotoFile, setNewPhotoFile] = useState(null); // no longer used
+  const [profileError, setProfileError] = useState(""); // holds error messages
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
@@ -52,7 +53,14 @@ export default function ProfileButton() {
       where("displayName", "==", name)
     );
     const querySnapshot = await getDocs(q);
-    return querySnapshot.empty;
+    // If any document is found whose id is not the current user's uid, the name is taken.
+    let conflict = false;
+    querySnapshot.forEach((docSnapshot) => {
+      if (docSnapshot.id !== auth.currentUser.uid) {
+        conflict = true;
+      }
+    });
+    return !conflict;
   };
 
   const handleEditProfile = async (e) => {
@@ -63,9 +71,11 @@ export default function ProfileButton() {
       // Check if the name is unique
       const isUnique = await checkNameUnique(newName);
       if (!isUnique) {
-        alert("Name already in use. Please choose a different name.");
+        setProfileError("Name already in use. Please choose a different name.");
         return;
       }
+      // Clear error if unique
+      setProfileError("");
       // Update profile displayName
       await updateProfile(auth.currentUser, {
         displayName: newName || auth.currentUser.displayName,
@@ -85,10 +95,8 @@ export default function ProfileButton() {
   };
 
   const handleDeleteAccount = async () => {
-    // Ask the user for confirmation
     if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
       try {
-        // Delete the user from Firebase Auth.
         await auth.currentUser.delete();
         // Optionally, delete the user's document from Firestore:
         // await deleteDoc(doc(db, "users", auth.currentUser.uid));
@@ -238,6 +246,12 @@ export default function ProfileButton() {
                         }}
                       />
                     </label>
+                    {/* Display error message if name is already in use */}
+                    {profileError && (
+                      <p style={{ color: "tomato", fontSize: "0.9rem", marginTop: "5px" }}>
+                        {profileError}
+                      </p>
+                    )}
                     <br />
                     <br />
                     <div style={{ display: "flex", gap: "8px" }}>
@@ -265,7 +279,10 @@ export default function ProfileButton() {
                       </button>
                       <button
                         type="button"
-                        onClick={() => setEditing(false)}
+                        onClick={() => {
+                          setEditing(false);
+                          setProfileError("");
+                        }}
                         style={{
                           padding: "8px",
                           marginLeft: "10px",
