@@ -171,7 +171,7 @@ export default function Home() {
           <a>
             <img
               className="logo"
-              src="/logo-title.svg"
+              src="/logo3.svg"
               alt="Marvelversed Logo"
               style={{
                 position: "absolute",
@@ -181,6 +181,7 @@ export default function Home() {
                 width: "700px",
                 maxWidth: "100%",
                 height: "auto",
+                filter: "brightness(0.7)",
               }}
             />
           </a>

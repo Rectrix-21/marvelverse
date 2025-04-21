@@ -16,6 +16,16 @@ export const metadata = {
   icons: {
     icon: "/deadpool-logo.svg",
   },
+
+  links: [
+    {
+      rel: "preload",
+      href: "/fonts/Woodwarrior-Regular.ttf",
+      as: "font",
+      type: "font/ttf",
+      crossOrigin: "anonymous",
+    },
+  ],
 };
 
 export default function RootLayout({ children }) {

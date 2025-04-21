@@ -19,6 +19,14 @@ body {
   font-style: normal;
 }
 
+@font-face {
+  font-family: "Woodwarrior-Regular";
+  src: url("/fonts/Woodwarrior-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* background video */
 #bgVideo {
   position: fixed;
@@ -79,6 +87,17 @@ body {
 .table-responsive td {
   white-space: nowrap; /* prevent wrapping inside cells */
 }
+
+.logo-title {
+  filter: brightness(0.7);
+  letter-spacing: 0.2em;
+}
+
+h2 span[style*="rgb(255, 0, 0)"] {
+  filter: brightness(0.7);
+}
+
+
 
 /* mobile adjustments */
 @media (max-width: 600px) {
@@ -156,6 +175,3 @@ body {
     font-size: 0.85rem !important;
   }
 }
-
-
-
