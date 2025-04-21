@@ -161,6 +161,7 @@ export default function Home() {
           alignItems: "center",
           justifyContent: "center",
           padding: "40px",
+          paddingBottom: "10px",
           color: "#fff",
           boxSizing: "border-box",
           overflowY: "auto",
@@ -174,12 +175,11 @@ export default function Home() {
               src="/logo3.svg"
               alt="Marvelversed Logo"
               style={{
-                position: "absolute",
-                top: "200px",
-                left: "50%",
-                transform: "translateX(-50%)",
+                display: "block",
+                margin: "0 auto",
                 width: "700px",
                 maxWidth: "100%",
+                paddingBottom: "50px",
                 height: "auto",
                 filter: "brightness(0.7)",
               }}
