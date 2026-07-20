@@ -12,11 +12,11 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
+import marvelCharacters from "../../data/marvelCharacters.json";
 
 export default function Fragmentum() {
   const TOTAL_ROUNDS = 5;
   const tileSize = 100; // pixels
-  const ACCESS_TOKEN = "b7c79102f60865edb0f830afef67f183";
   const LOCK_PERCENTAGE = 0.3;
   const TIME_LIMIT = 30; // seconds
 
@@ -196,47 +196,12 @@ export default function Fragmentum() {
   // Puzzle Setup & Timer Logic
   useEffect(() => {
     if (!mode) return;
-    const MAX_ATTEMPTS = 3;
-    async function fetchSuperhero(attempt = 0) {
-      try {
-        const res = await fetch(
-          `https://www.superheroapi.com/api.php/${ACCESS_TOKEN}/search/a`
-        );
-        const data = await res.json();
-        if (data.response === "success" && data.results) {
-          const filtered = data.results.filter(
-            (hero) =>
-              hero.image &&
-              hero.image.url &&
-              hero.biography &&
-              hero.biography.publisher &&
-              (hero.biography.publisher.toLowerCase().includes("marvel") ||
-                hero.name.toLowerCase().includes("deadpool"))
-          );
-          if (filtered.length === 0) {
-            if (attempt < MAX_ATTEMPTS) {
-              fetchSuperhero(attempt + 1);
-            } else {
-              setMessage(
-                "Error: No Marvel characters available. Please try again later."
-              );
-            }
-            return;
-          }
-          const randomHero =
-            filtered[Math.floor(Math.random() * filtered.length)];
-          setSuperhero(randomHero);
-        } else {
-          setMessage(
-            "Error: Unable to load superhero. Please try again later."
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching superhero", error);
-        setMessage("Error: Unable to load superhero. Please try again later.");
-      }
-    }
-    fetchSuperhero();
+    const randomHero =
+      marvelCharacters[Math.floor(Math.random() * marvelCharacters.length)];
+    setSuperhero({
+      name: randomHero.name,
+      image: { url: randomHero.imageUrl },
+    });
     // Reset timer for new round.
     setTimeLeft(TIME_LIMIT);
   }, [round, mode, imgErrorCount]);

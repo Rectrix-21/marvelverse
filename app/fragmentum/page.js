@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import marvelCharacters from "../data/marvelCharacters.json";
 
 export default function Fragmentum() {
   const TOTAL_ROUNDS = 5;
   const tileSize = 100; // pixels
-  const ACCESS_TOKEN = "b7c79102f60865edb0f830afef67f183";
   const LOCK_PERCENTAGE = 0.3;
 
   // State hooks
@@ -94,53 +94,15 @@ export default function Fragmentum() {
     setTouchOverIndex(null);
   };
 
-  // Fetch superhero – only if mode is selected.
+  // Pick a superhero from the local Marvel roster – only if mode is selected.
   useEffect(() => {
     if (!mode) return;
-    const MAX_ATTEMPTS = 3;
-    async function fetchSuperhero(attempt = 0) {
-      try {
-        const res = await fetch(
-          `https://www.superheroapi.com/api.php/${ACCESS_TOKEN}/search/a`
-        );
-        const data = await res.json();
-        if (data.response === "success" && data.results) {
-          const filtered = data.results.filter(
-            (hero) =>
-              hero.image &&
-              hero.image.url &&
-              hero.biography &&
-              hero.biography.publisher &&
-              (hero.biography.publisher.toLowerCase().includes("marvel") ||
-                hero.name.toLowerCase().includes("deadpool"))
-          );
-          if (filtered.length === 0) {
-            if (attempt < MAX_ATTEMPTS) {
-              console.warn(`No valid superhero found, attempt ${attempt + 1}`);
-              fetchSuperhero(attempt + 1);
-            } else {
-              console.error("No valid Marvel characters returned from API.");
-              setMessage(
-                "Error: No Marvel characters available. Please try again later."
-              );
-            }
-            return;
-          }
-          const randomHero =
-            filtered[Math.floor(Math.random() * filtered.length)];
-          setSuperhero(randomHero);
-        } else {
-          console.error("Superhero API did not return a success response.");
-          setMessage(
-            "Error: Unable to load superhero. Please try again later."
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching superhero", error);
-        setMessage("Error: Unable to load superhero. Please try again later.");
-      }
-    }
-    fetchSuperhero();
+    const randomHero =
+      marvelCharacters[Math.floor(Math.random() * marvelCharacters.length)];
+    setSuperhero({
+      name: randomHero.name,
+      image: { url: randomHero.imageUrl },
+    });
   }, [round, mode, imgErrorCount]);
 
   useEffect(() => {

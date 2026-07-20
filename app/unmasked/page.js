@@ -2,10 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import championData from "./class.json";
 import Image from "next/image";
-
-const ACCESS_TOKEN = "b7c79102f60865edb0f830afef67f183";
+import marvelCharacters from "../data/marvelCharacters.json";
 
 const mcuMovieClues = {
   "Iron Man": "He starred in the 2008 blockbuster 'Iron Man.'",
@@ -18,13 +16,6 @@ const mcuMovieClues = {
   Hawkeye: "This master archer appears throughout the Avengers films.",
 };
 
-const getChampionClass = (name) => {
-  const entry = championData.characters.find(
-    (item) => item.name.toLowerCase() === name.toLowerCase()
-  );
-  return entry ? entry.class : "Unknown";
-};
-
 export default function Unmasked() {
   const [characters, setCharacters] = useState([]);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
@@ -34,7 +25,6 @@ export default function Unmasked() {
   const [score, setScore] = useState(0);
   const [attemptsLeft, setAttemptsLeft] = useState(15);
   const [loading, setLoading] = useState(true);
-  const [errorMsg, setErrorMsg] = useState("");
   const [gameOver, setGameOver] = useState(false);
   const [currentRound, setCurrentRound] = useState(1);
   const [roundEnded, setRoundEnded] = useState(false);
@@ -54,92 +44,33 @@ export default function Unmasked() {
   // Comparison table properties
   const comparisonProperties = [
     { label: "Guess", custom: true, type: "text" },
-    { label: "Full Name", parentKey: "biography", type: "text" },
-    { label: "Gender", parentKey: "appearance", type: "text" },
-    { label: "Race", parentKey: "appearance", type: "text" },
-    { label: "Place of Birth", parentKey: "biography", type: "text" },
-    { label: "Base", parentKey: "work", type: "text" },
-    { label: "Class", parentKey: "custom", type: "text" },
-    { label: "Intelligence", parentKey: "powerstats", type: "number" },
-    { label: "Strength", parentKey: "powerstats", type: "number" },
-    { label: "Speed", parentKey: "powerstats", type: "number" },
-    { label: "Durability", parentKey: "powerstats", type: "number" },
-    { label: "Power", parentKey: "powerstats", type: "number" },
-    { label: "Combat", parentKey: "powerstats", type: "number" },
+    { label: "Real Name", key: "realName", type: "text" },
+    { label: "Gender", key: "gender", type: "text" },
+    { label: "Origin", key: "origin", type: "text" },
+    { label: "Class", key: "characterClass", type: "text" },
+    { label: "Issue Appearances", key: "issueAppearances", type: "number" },
   ];
 
-  const fetchURL = `https://www.superheroapi.com/api.php/${ACCESS_TOKEN}/search/a`;
-
+  // Pick the round's character from the local Marvel roster on mount.
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const res = await fetch(fetchURL);
-        const data = await res.json();
-        if (data.response !== "success" || !data.results) {
-          throw new Error("Invalid API response structure");
-        }
-        const chars = data.results;
-        if (!Array.isArray(chars) || chars.length === 0) {
-          throw new Error("No characters returned from Superhero API");
-        }
-        const marvelChars = chars.filter((char) => {
-          return (
-            char.biography &&
-            char.biography.publisher &&
-            (char.biography.publisher.toLowerCase().includes("marvel") ||
-              char.name.toLowerCase().includes("deadpool"))
-          );
-        });
-        if (marvelChars.length === 0) {
-          throw new Error("No Marvel characters returned from Superhero API");
-        }
-        setCharacters(marvelChars);
-        const randomChar =
-          marvelChars[Math.floor(Math.random() * marvelChars.length)];
-        setSelectedCharacter(randomChar);
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching Superhero data", err);
-        setErrorMsg(
-          "Error fetching Superhero data. Please check your access token or try again later."
-        );
-        setLoading(false);
-      }
-    }
-    fetchData();
-  }, [fetchURL]);
+    setCharacters(marvelCharacters);
+    const randomChar =
+      marvelCharacters[Math.floor(Math.random() * marvelCharacters.length)];
+    setSelectedCharacter(randomChar);
+    setLoading(false);
+  }, []);
 
+  // Suggestions are filtered client-side from the local roster (no network call).
   useEffect(() => {
-    async function fetchSuggestions() {
-      if (!currentGuess.trim()) {
-        setSuggestions([]);
-        return;
-      }
-      try {
-        const res = await fetch(
-          `https://www.superheroapi.com/api.php/${ACCESS_TOKEN}/search/${currentGuess}`
-        );
-        const data = await res.json();
-        if (data.response !== "success" || !data.results) {
-          setSuggestions([]);
-          return;
-        }
-        const marvelChars = data.results.filter((char) => {
-          return (
-            char.biography &&
-            char.biography.publisher &&
-            (char.biography.publisher.toLowerCase().includes("marvel") ||
-              char.name.toLowerCase().includes("deadpool"))
-          );
-        });
-        setSuggestions(marvelChars);
-      } catch (err) {
-        console.error("Error fetching suggestions", err);
-        setSuggestions([]);
-      }
+    const q = currentGuess.trim().toLowerCase();
+    if (!q) {
+      setSuggestions([]);
+      return;
     }
-    fetchSuggestions();
-  }, [currentGuess]);
+    setSuggestions(
+      characters.filter((c) => c.name.toLowerCase().includes(q)).slice(0, 5)
+    );
+  }, [currentGuess, characters]);
 
   useEffect(() => {
     setImgErrorCount(0);
@@ -162,46 +93,34 @@ export default function Unmasked() {
 
   useEffect(() => {
     if (selectedCharacter) {
-      if (!selectedCharacter.custom) {
-        selectedCharacter.custom = {};
-      }
-      selectedCharacter.custom.class = getChampionClass(selectedCharacter.name);
-      const bio = selectedCharacter.biography || {};
-
-      const gender =
-        selectedCharacter.appearance && selectedCharacter.appearance.gender
-          ? selectedCharacter.appearance.gender.toLowerCase()
-          : "";
+      const gender = (selectedCharacter.gender || "").toLowerCase();
       const pronoun =
         gender === "female"
           ? { subject: "She", possessive: "Her" }
           : { subject: "He", possessive: "His" };
 
       const newClues = [];
-      if (mcuMovieClues[selectedCharacter.name]) {
-        newClues.push(mcuMovieClues[selectedCharacter.name]);
+      if (mcuMovieClues[selectedCharacter.baseName]) {
+        newClues.push(mcuMovieClues[selectedCharacter.baseName]);
       } else {
+        newClues.push("This character is part of the Marvel Universe.");
+      }
+      if (selectedCharacter.firstAppearance) {
+        const firstTitle = selectedCharacter.firstAppearance
+          .split(";")[0]
+          .trim();
         newClues.push(
-          "This character is part of the Marvel Cinematic Universe."
+          `${pronoun.subject} first appeared in the issue "${firstTitle}".`
         );
       }
-      if (bio["first-appearance"] && bio["first-appearance"] !== "-") {
+      if (selectedCharacter.origin && selectedCharacter.origin !== "Unknown") {
         newClues.push(
-          `${
-            pronoun.subject
-          } made ${pronoun.possessive.toLowerCase()} debut in ${
-            bio["first-appearance"]
-          }.`
+          `${pronoun.possessive} origin is classified as "${selectedCharacter.origin}".`
         );
       }
-      if (bio["place-of-birth"] && bio["place-of-birth"] !== "-") {
+      if (selectedCharacter.realName) {
         newClues.push(
-          `${pronoun.subject} was born in ${bio["place-of-birth"]}.`
-        );
-      }
-      if (bio["full-name"] && bio["full-name"] !== "-") {
-        newClues.push(
-          `${pronoun.possessive} full name is ${bio["full-name"]}.`
+          `${pronoun.possessive} real name is ${selectedCharacter.realName}.`
         );
       }
       setClues(newClues);
@@ -216,31 +135,16 @@ export default function Unmasked() {
       if (prop.custom) {
         guessedVal = currentGuess || "N/A";
         actualVal = selectedCharacter ? selectedCharacter.name : "N/A";
-      } else if (
-        prop.parentKey === "custom" &&
-        prop.label.toLowerCase() === "class"
-      ) {
-        guessedVal = guess ? getChampionClass(guess.name) : "N/A";
-        actualVal = selectedCharacter.custom?.class || "N/A";
       } else {
-        guessedVal =
-          guess &&
-          guess[prop.parentKey] &&
-          guess[prop.parentKey][prop.label.toLowerCase().replace(/ /g, "-")];
+        guessedVal = guess && guess[prop.key] != null ? guess[prop.key] : "N/A";
         actualVal =
-          selectedCharacter &&
-          selectedCharacter[prop.parentKey] &&
-          selectedCharacter[prop.parentKey][
-            prop.label.toLowerCase().replace(/ /g, "-")
-          ]
-            ? selectedCharacter[prop.parentKey][
-                prop.label.toLowerCase().replace(/ /g, "-")
-              ]
+          selectedCharacter && selectedCharacter[prop.key] != null
+            ? selectedCharacter[prop.key]
             : "N/A";
       }
       return {
         label: prop.label,
-        guessedVal: guessedVal || "N/A",
+        guessedVal,
         actualVal,
         type: prop.type,
       };
@@ -348,21 +252,6 @@ export default function Unmasked() {
         }}
       >
         Loading MCU Character Guesser...
-      </div>
-    );
-  }
-
-  if (errorMsg) {
-    return (
-      <div
-        style={{
-          textAlign: "center",
-          padding: "60px",
-          color: "tomato",
-          fontSize: "22px",
-        }}
-      >
-        {errorMsg}
       </div>
     );
   }
@@ -476,7 +365,7 @@ export default function Unmasked() {
           {score}
         </p>
         <div style={{ textAlign: "center", marginBottom: "30px" }}>
-          {selectedCharacter.image && selectedCharacter.image.url ? (
+          {selectedCharacter.imageUrl ? (
             <div
               style={{
                 width: "100%",
@@ -489,7 +378,7 @@ export default function Unmasked() {
               }}
             >
               <Image
-                src={selectedCharacter.image.url}
+                src={selectedCharacter.imageUrl}
                 alt="Guess the Marvel character"
                 layout="responsive"
                 width={500}
@@ -574,7 +463,7 @@ export default function Unmasked() {
                   >
                     {suggestions.slice(0, 5).map((char) => (
                       <li
-                        key={char.id}
+                        key={char.cvId}
                         onClick={() => setCurrentGuess(char.name)}
                         style={{
                           padding: "10px 14px",
